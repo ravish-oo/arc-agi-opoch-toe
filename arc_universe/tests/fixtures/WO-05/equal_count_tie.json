@@ -1,0 +1,15 @@
+{
+  "description": "Colors with equal counts (test first-appearance tie-breaking)",
+  "grid": [
+    [7, 7, 0, 0],
+    [7, 7, 0, 0],
+    [3, 3, 0, 0],
+    [3, 3, 0, 0]
+  ],
+  "expected": {
+    "counts": {"7": 4, "3": 4, "0": 8},
+    "first_appearance": {"7": [0, 0], "0": [0, 2], "3": [2, 0]},
+    "canonical_order": [0, 7, 3],
+    "note": "0 has highest count (8); 7 and 3 tie at count=4, broken by first-appearance: 7 at (0,0) before 3 at (2,0)"
+  }
+}

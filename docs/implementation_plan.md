@@ -170,6 +170,46 @@ def unify_shape(presents_train: List[Present]) -> ShapeParams
 
 ⸻
 
+### Integration Testing Infrastructure (Post WO-04) ✅ COMPLETED
+
+**Location:** `arc_universe/integration_tests/`
+
+This directory contains standalone orchestration scripts for validating completed WOs against real ARC-AGI data. These are NOT unit tests—they are end-to-end validation harnesses that run the full pipeline on actual challenge data and generate receipts.
+
+**Structure:**
+- `utils.py` — ARC data loaders and helpers
+- `run_gate_a.py` — Gate A validation (WL union + receipts, after WO-03)
+- `run_gate_b.py` — Gate B validation (Gate A + shape meet, after WO-04)
+- `receipts/` — JSON receipts per task (gitignored)
+- `logs/` — Execution logs (gitignored)
+
+**⚠️ DO NOT MODIFY:** This workspace is managed separately for integration validation. Changes to `arc_core/` modules are fine, but do not edit integration test scripts unless explicitly instructed.
+
+**Usage:**
+```bash
+cd arc_universe/integration_tests
+python run_gate_a.py --limit 50    # Run Gate A on 50 random tasks
+python run_gate_b.py --limit 50    # Run Gate B on 50 random tasks
+```
+
+**Expected Outcomes (Gates A & B):**
+- ✅ `unseen_roles = 0` for all tasks (critical WL union invariant)
+- ✅ 100% determinism across runs (hash64, global order)
+- ✅ ΠG idempotence verified (present canonicalization)
+- 📊 WL statistics logged: iterations, role counts, convergence patterns
+- 📊 Shape statistics logged: |R|, |C| distributions, shape-change patterns
+
+**Gate Progression:**
+- **Gate A** (after WO-03): Present + WL union validation only
+- **Gate B** (after WO-04): Gate A + shape meet validation
+- **Gate C** (after WO-05): Gate B + palette orbit/canonicalization
+- **Gate D** (after WO-06/07/08): Parameter extraction validation
+- **Gate E** (after WO-09/10 + WO-15/16/17): First end-to-end predictions
+- **Gate F** (after WO-11/12/13/14): Extended law families
+- **Gate G** (after WO-19/20): Full corpus sweep with CLI
+
+⸻
+
 WO-05: arc_core/palette.py — Orbit CPRQ + canonicalizer N
 	•	Goal: orbit kernel + input-lawful canonical palette (counts↓, first-occurrence↑, boundary-hash↑).
 	•	Inputs: train labels, present-trains.

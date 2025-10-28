@@ -210,3 +210,8 @@ data/
 reviews/
 test_plans/
 test_reports/
+
+# Integration test outputs
+integration_tests/receipts/
+arc_universe/integration_tests/logs/
+arc_universe/integration_tests/receipts/

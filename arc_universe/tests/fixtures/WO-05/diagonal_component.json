@@ -1,0 +1,13 @@
+{
+  "description": "8-CC diagonal component with no 4-neighbors (all boundary)",
+  "grid": [
+    [1, 0, 0],
+    [0, 1, 0],
+    [0, 0, 1]
+  ],
+  "expected": {
+    "component_color_1": [[0, 0], [1, 1], [2, 2]],
+    "boundary_pixels": [[0, 0], [1, 1], [2, 2]],
+    "note": "All 3 pixels are boundary (no 4-neighbors of same color). Components use 8-CC (connected diagonally), but boundary uses E4 (4-connected only)"
+  }
+}

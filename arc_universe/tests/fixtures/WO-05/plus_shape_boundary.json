@@ -1,0 +1,15 @@
+{
+  "description": "Plus shape to verify E4 boundary detection",
+  "grid": [
+    [0, 1, 0],
+    [1, 1, 1],
+    [0, 1, 0]
+  ],
+  "expected": {
+    "boundary_pixels_color_1": [
+      [0, 1], [1, 0], [1, 2], [2, 1]
+    ],
+    "interior_pixels_color_1": [[1, 1]],
+    "note": "4 pixels are boundary (touch 0 via E4), center (1,1) is interior (all 4-neighbors are color 1)"
+  }
+}

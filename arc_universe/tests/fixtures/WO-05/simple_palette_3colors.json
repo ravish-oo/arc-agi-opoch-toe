@@ -1,0 +1,14 @@
+{
+  "description": "Basic 3-color grid for determinism test",
+  "grid": [
+    [0, 0, 7, 7, 7],
+    [0, 0, 7, 7, 7],
+    [3, 3, 7, 7, 7]
+  ],
+  "expected": {
+    "counts": {"7": 9, "0": 4, "3": 2},
+    "first_appearance": {"0": [0, 0], "7": [0, 2], "3": [2, 0]},
+    "canonical_order": [7, 0, 3],
+    "note": "7 has highest count (9), then 0 (4), then 3 (2)"
+  }
+}

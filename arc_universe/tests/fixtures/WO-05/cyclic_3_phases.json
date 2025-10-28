@@ -1,0 +1,46 @@
+{
+  "description": "Cyclic-3 task with recolored trains",
+  "train_pairs": [
+    {
+      "input": [
+        [0, 0, 0],
+        [0, 0, 0],
+        [0, 0, 0]
+      ],
+      "output": [
+        [2, 4, 1],
+        [1, 2, 4],
+        [4, 1, 2]
+      ]
+    },
+    {
+      "input": [
+        [0, 0, 0],
+        [0, 0, 0],
+        [0, 0, 0]
+      ],
+      "output": [
+        [4, 8, 3],
+        [3, 4, 8],
+        [8, 3, 4]
+      ]
+    }
+  ],
+  "test": {
+    "input": [
+      [0, 0, 0],
+      [0, 0, 0],
+      [0, 0, 0]
+    ]
+  },
+  "expected": {
+    "wl_roles": 3,
+    "orbit_used": true,
+    "train_permutations": [
+      {"abstract_0": 2, "abstract_1": 4, "abstract_2": 1},
+      {"abstract_0": 4, "abstract_1": 8, "abstract_2": 3}
+    ],
+    "cells_wrong_after_π": [0, 0],
+    "note": "Cyclic-3 phase pattern: each position has one of 3 roles, recolored differently in each train"
+  }
+}

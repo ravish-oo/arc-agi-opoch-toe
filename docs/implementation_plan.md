@@ -94,7 +94,7 @@ For each WO: Goal → Inputs → Outputs → API → Acceptance → Tests (unit)
 
 ⸻
 
-WO-01: arc_core/order_hash.py — Global order & hashing
+WO-01: arc_core/order_hash.py — Global order & hashing ✅ COMPLETED
 	•	Goal: Provide canonical hashing and the single total order used everywhere.
 	•	Inputs: arbitrary Python types that serialize to canonical JSON.
 	•	Outputs: hash64(obj:int), tuple utilities lex_min, lex_sort, boundary_hash.

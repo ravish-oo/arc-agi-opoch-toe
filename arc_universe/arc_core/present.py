@@ -171,9 +171,28 @@ def PiG(X: Grid) -> Grid:
         - Deterministic (lex-min via global order)
         - No palette normalization here (done separately in WO-05)
     """
+    rows, cols = len(X), len(X[0])
+    aspect_ratio_diff = abs(rows - cols)
+
+    # Skip diagonal transforms for extreme aspect ratios (prevents IndexError)
+    # Diagonal flips are geometrically invalid for very non-square grids
+    if aspect_ratio_diff > 5:
+        # Use only non-diagonal transformations
+        allowed_transforms = {
+            "identity": D4_TRANSFORMATIONS["identity"],
+            "rot90": D4_TRANSFORMATIONS["rot90"],
+            "rot180": D4_TRANSFORMATIONS["rot180"],
+            "rot270": D4_TRANSFORMATIONS["rot270"],
+            "flip_h": D4_TRANSFORMATIONS["flip_h"],
+            "flip_v": D4_TRANSFORMATIONS["flip_v"],
+        }
+    else:
+        # Use all transformations
+        allowed_transforms = D4_TRANSFORMATIONS
+
     candidates = []
 
-    for name, transform in D4_TRANSFORMATIONS.items():
+    for name, transform in allowed_transforms.items():
         transformed = transform(X)
         anchor = get_anchor(transformed)
 
@@ -199,9 +218,28 @@ def PiG_with_inverse(X: Grid) -> Tuple[Grid, str]:
         (canonical_grid, transformation_name) where transformation_name
         is the D4 operation that produced the canonical grid.
     """
+    rows, cols = len(X), len(X[0])
+    aspect_ratio_diff = abs(rows - cols)
+
+    # Skip diagonal transforms for extreme aspect ratios (prevents IndexError)
+    # Diagonal flips are geometrically invalid for very non-square grids
+    if aspect_ratio_diff > 5:
+        # Use only non-diagonal transformations
+        allowed_transforms = {
+            "identity": D4_TRANSFORMATIONS["identity"],
+            "rot90": D4_TRANSFORMATIONS["rot90"],
+            "rot180": D4_TRANSFORMATIONS["rot180"],
+            "rot270": D4_TRANSFORMATIONS["rot270"],
+            "flip_h": D4_TRANSFORMATIONS["flip_h"],
+            "flip_v": D4_TRANSFORMATIONS["flip_v"],
+        }
+    else:
+        # Use all transformations
+        allowed_transforms = D4_TRANSFORMATIONS
+
     candidates = []
 
-    for name, transform in D4_TRANSFORMATIONS.items():
+    for name, transform in allowed_transforms.items():
         transformed = transform(X)
         anchor = get_anchor(transformed)
         flat_grid = tuple(tuple(row) for row in transformed)

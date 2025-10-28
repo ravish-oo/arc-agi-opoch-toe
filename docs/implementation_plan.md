@@ -156,7 +156,7 @@ def wl_union(presents: List[Present], escalate=False, max_iters=12) -> RoleMap
 
 ⸻
 
-WO-04: arc_core/shape.py — 1-D WL meet for U=R×C
+WO-04: arc_core/shape.py — 1-D WL meet for U=R×C ✅ COMPLETED
 	•	Goal: unify shape (no P catalog); R=∧R_i, C=∧C_i.
 	•	Inputs: present-trains.
 	•	Outputs: partitions R,C, maps s_i.

@@ -142,7 +142,7 @@ def build_present(X: Grid) -> Present
 
 ⸻
 
-WO-03: arc_core/wl.py — 1-WL on disjoint union (train∪test)
+WO-03: arc_core/wl.py — 1-WL on disjoint union (train∪test) ✅ COMPLETED
 	•	Goal: WL fixed point on union; E8 escalation toggle.
 	•	Inputs: list[Present], escalate: bool.
 	•	Outputs: colors: Dict[(grid_id, (r,c)), RoleId] stable across union.

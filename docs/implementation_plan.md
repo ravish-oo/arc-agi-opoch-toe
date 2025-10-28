@@ -127,7 +127,7 @@ def boundary_hash(component: Set[Pixel], grid: Grid) -> int:
 
 ⸻
 
-WO-02: arc_core/present.py — G & ΠG, present structure
+WO-02: arc_core/present.py — G & ΠG, present structure ✅ COMPLETED
 	•	Goal: Fix G=D_4\times translation anchor; build ΠG; present \mathcal G^\bullet (CBC3,E4,row/col eqs, same_color/component).
 	•	Inputs: raw grid X.
 	•	Outputs: PiG(X); present object {U, RAW, CBC3, E4, RowMembers, ColMembers, CompEq?} and g_test.

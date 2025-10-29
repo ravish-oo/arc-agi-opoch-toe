@@ -1,5 +1,5 @@
 """
-Fixed-point solver for ARC-AGI (WO-15, WO-16, WO-17).
+Fixed-point solver for ARC-AGI (WO-15, WO-16, WO-17, WO-18).
 
 Per implementation_plan.md Phase D and engineering_spec.md §8.
 
@@ -7,6 +7,7 @@ Modules:
 - expressions.py (WO-15): Expression representation E_q(θ), domains Dom(e)
 - closures.py (WO-16): 8 closure functions (T_def, T_canvas, ..., T_Γ)
 - lfp.py (WO-17): Least fixed-point computation on product lattice
+- eval_unpresent.py (WO-18): Evaluate singletons to Y^; unpresent by g_test^{-1}
 """
 
 from .expressions import Expr, init_expressions
@@ -21,6 +22,7 @@ from .closures import (
     apply_interface_closure,
 )
 from .lfp import compute_lfp, LFPReceipt
+from .eval_unpresent import evaluate_and_unpresent
 
 __all__ = [
     "Expr",
@@ -35,4 +37,5 @@ __all__ = [
     "apply_interface_closure",
     "compute_lfp",
     "LFPReceipt",
+    "evaluate_and_unpresent",
 ]

@@ -319,7 +319,7 @@ def apply_selector_on_test(selector_type, mask, X_test, histogram) -> Tuple[Opti
 
 ⸻
 
-WO-14: arc_laws/connect_fill.py  (new) 
+WO-14: arc_laws/connect_fill.py  (new) ✅ COMPLETED
 	•	Goal: CONNECT_ENDPOINTS (shortest 4/8-conn path; lex-min path); REGION_FILL[mask,color].
 	•	API: build_connect_fill(theta) -> [...]
 	•	Tests: exact geodesic; flood under mask; receipts anchor/mask hash.

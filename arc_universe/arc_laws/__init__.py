@@ -18,5 +18,6 @@ Law families:
 """
 
 from .local_paint import build_local_paint
+from .selectors import apply_selector_on_test
 
-__all__ = ["build_local_paint"]
+__all__ = ["build_local_paint", "apply_selector_on_test"]

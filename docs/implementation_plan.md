@@ -275,7 +275,7 @@ WO-09: arc_laws/local_paint.py ✅ COMPLETED
 
 ⸻
 
-WO-10: arc_laws/object_arith.py
+WO-10: arc_laws/object_arith.py ✅ COMPLETED
 	•	Goal: copy/move Δ; lines via Bresenham; skeleton/thinning (1-px).
 	•	API: build_object_arith(theta) -> [...]
 	•	Tests: draw path; move by Δ; skeleton receipts.

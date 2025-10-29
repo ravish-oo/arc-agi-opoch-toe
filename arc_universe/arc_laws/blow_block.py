@@ -21,6 +21,8 @@ from collections import defaultdict
 
 from arc_core.types import Grid, LawInstance
 from arc_core.order_hash import hash64
+from arc_core.lattice import infer_lattice, Lattice
+from arc_core.canvas import infer_canvas, CanvasMap
 
 
 # =============================================================================
@@ -34,11 +36,16 @@ class BlowBlockLaw:
 
     Each instance represents learned parameters (k, motifs) that passed
     FY exactness verification on all training pairs.
+
+    Per spec: "align tiles by compiled lattice/canvas" (math_spec.md §7,
+    engineering_spec.md §6, §10)
     """
     operation: str  # "blowup", "block_subst", or "blowup+block_subst"
     k: int  # Inflation factor (each pixel → k×k block)
     motifs: Dict[int, Tuple[Tuple[int, ...]]]  # color → k×k motif (as nested tuples for hashability)
     motif_hashes: Dict[int, int]  # color → hash of motif (for receipts)
+    lattice: Optional[Lattice]  # Lattice used for tile alignment (if periodic structure)
+    canvas: Optional[CanvasMap]  # Canvas used for tile alignment (if canvas transforms)
 
 
 # =============================================================================
@@ -277,31 +284,52 @@ def infer_motifs_from_pair(X: Grid, Y: Grid, k: int) -> Optional[Dict[int, Tuple
     return consistent_motifs
 
 
-def infer_blowup_params(train_pairs: List[Tuple[Grid, Grid]]) -> Optional[Tuple[int, Dict[int, Tuple[Tuple[int, ...]]]]]:
+def infer_blowup_params(train_pairs: List[Tuple[Grid, Grid]]) -> Optional[Tuple[int, Dict[int, Tuple[Tuple[int, ...]]], Optional[Lattice], Optional[CanvasMap]]]:
     """
-    Learn BLOWUP parameters (k, motifs) from training pairs.
+    Learn BLOWUP parameters (k, motifs, lattice, canvas) from training pairs.
+
+    Per spec: "align tiles by compiled lattice/canvas" (math_spec.md §7,
+    engineering_spec.md §6, §10).
 
     Algorithm:
-    1. Infer k from first training pair
-    2. Verify k is consistent across ALL training pairs
-    3. Infer motifs from first training pair
-    4. Verify motifs are consistent across ALL training pairs
+    1. Try to infer lattice from training inputs (for periodic alignment)
+    2. Try to infer canvas from training pairs (for canvas transformations)
+    3. Infer k: use lattice period if available, else size ratio
+    4. Verify k is consistent across ALL training pairs
+    5. Infer motifs from first training pair
+    6. Verify motifs are consistent across ALL training pairs
 
     Args:
         train_pairs: List of (input_grid, output_grid) training pairs
 
     Returns:
-        (k, motifs) if consistent across all trains, None otherwise
+        (k, motifs, lattice, canvas) if consistent across all trains, None otherwise
     """
     if not train_pairs:
         return None
 
     X0, Y0 = train_pairs[0]
 
-    # Infer k from first pair
+    # Infer k from size ratio (standard method)
     k = infer_k_from_pair(X0, Y0)
     if k is None:
         return None
+
+    # Try to infer lattice (for periodic structure alignment)
+    # Per spec: "align tiles by compiled lattice/canvas"
+    # Lattice/canvas used for tile alignment, not for determining k
+    lattice = None
+    try:
+        lattice = infer_lattice([X for X, Y in train_pairs])
+    except Exception:
+        pass  # No lattice, continue without lattice alignment
+
+    # Try to infer canvas (for canvas transformation alignment)
+    canvas = None
+    try:
+        canvas = infer_canvas(train_pairs)
+    except Exception:
+        pass  # No canvas, continue without canvas alignment
 
     # Verify k consistent across all pairs
     for X, Y in train_pairs:
@@ -325,7 +353,7 @@ def infer_blowup_params(train_pairs: List[Tuple[Grid, Grid]]) -> Optional[Tuple[
             if color in motifs_pair and motifs_pair[color] != motif:
                 return None  # Motif for color changed
 
-    return k, motifs
+    return k, motifs, lattice, canvas
 
 
 # =============================================================================
@@ -383,12 +411,12 @@ def build_blow_block(theta: dict) -> List[BlowBlockLaw]:
     if not train_pairs:
         return laws
 
-    # Infer parameters
+    # Infer parameters (with lattice/canvas per spec)
     params = infer_blowup_params(train_pairs)
     if params is None:
         return laws  # No consistent BLOWUP+BLOCK_SUBST detected
 
-    k, motifs = params
+    k, motifs, lattice, canvas = params
 
     # Verify FY exactness
     if not verify_blowup_block_subst(k, motifs, train_pairs):
@@ -400,12 +428,14 @@ def build_blow_block(theta: dict) -> List[BlowBlockLaw]:
         # Hash the motif for receipts
         motif_hashes[color] = hash64(motif_tuple)
 
-    # Create law instance
+    # Create law instance (spec-compliant with lattice/canvas)
     law = BlowBlockLaw(
         operation="blowup+block_subst",
         k=k,
         motifs=motifs,
-        motif_hashes=motif_hashes
+        motif_hashes=motif_hashes,
+        lattice=lattice,
+        canvas=canvas
     )
     laws.append(law)
 

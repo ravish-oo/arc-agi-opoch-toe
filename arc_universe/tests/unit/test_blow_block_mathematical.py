@@ -248,7 +248,7 @@ class TestMathematicalProperties:
         results = []
         for run in range(100):
             params = infer_blowup_params(train_pairs)
-            k, motifs = params
+            k, motifs, lattice, canvas = params
 
             # Serialize motifs for comparison
             serialized = json.dumps(
@@ -280,7 +280,7 @@ class TestMathematicalProperties:
         params = infer_blowup_params(train_pairs)
         assert params is not None, "Should infer consistent parameters"
 
-        k, motifs = params
+        k, motifs, lattice, canvas = params
         motifs_dict = {color: tuple_to_motif(motif) for color, motif in motifs.items()}
 
         # Verify FY exactness on each training pair

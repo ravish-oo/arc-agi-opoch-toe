@@ -424,7 +424,7 @@ class TestMultiTrainInference:
 
         params = infer_blowup_params(train_pairs)
         assert params is not None, "Should infer k=2"
-        k, motifs = params
+        k, motifs, lattice, canvas = params
         assert k == 2, f"Expected k=2, got {k}"
 
     def test_inconsistent_k_rejected(self):
@@ -446,7 +446,7 @@ class TestMultiTrainInference:
 
         params = infer_blowup_params(train_pairs)
         assert params is not None, "Should infer consistent motifs"
-        k, motifs = params
+        k, motifs, lattice, canvas = params
         assert k == 2
         assert 1 in motifs
         assert motifs[1] == ((1, 0), (0, 1))
@@ -475,7 +475,7 @@ class TestFYExactness:
             ([[1, 2]], [[1, 1, 2, 2], [1, 1, 2, 2]])
         ]
 
-        k, motifs = infer_blowup_params(train_pairs)
+        k, motifs, lattice, canvas = infer_blowup_params(train_pairs)
         motifs_dict = {c: tuple_to_motif(m) for c, m in motifs.items()}
 
         exact = verify_blowup_block_subst(k, motifs, train_pairs)
@@ -489,7 +489,7 @@ class TestFYExactness:
 
         params = infer_blowup_params(train_pairs)
         assert params is not None
-        k, motifs = params
+        k, motifs, lattice, canvas = params
 
         exact = verify_blowup_block_subst(k, motifs, train_pairs)
         assert exact, "FY exactness should hold"
@@ -595,7 +595,7 @@ class TestEdgeCases:
 
         params = infer_blowup_params(train_pairs)
         assert params is not None
-        k, motifs = params
+        k, motifs, lattice, canvas = params
         assert k == 3
 
     def test_non_divisible_grid_size(self):

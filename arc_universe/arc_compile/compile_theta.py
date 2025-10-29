@@ -27,7 +27,7 @@ from arc_core.lattice import infer_lattice
 from arc_core.palette import canonicalize_palette_for_task
 from arc_core.present import build_present
 from arc_core.shape import unify_shape
-from arc_core.types import Grid, Pixel
+from arc_core.types import Grid, Pixel, RoleId
 from arc_core.wl import wl_union
 from arc_fixedpoint.closures import (
     apply_block_closure,
@@ -89,16 +89,50 @@ def compile_theta(
         8
     """
     # =========================================================================
-    # Step 1: Present all inputs (ΠG)
+    # Step 1: Palette canonicalization (train∪test inputs) - MUST BE FIRST
     # =========================================================================
-    # Per math_spec.md §1 line 22: "store g_test so that the final output is unpresented"
+    # Per implementation_clarifications.md §2 line 120-123:
+    # "Per-grid palette would destabilize WL seeds → inconsistent role IDs"
+    # "Per-task palette keeps WL ID space coherent"
+    # "Apply same palette map to all grids (train inputs, test input, ...)"
+    #
+    # CRITICAL: Palette MUST be applied BEFORE Present/WL to prevent test-only colors
+    # from creating test-only roles. WL seed includes RAW(p), so WL must see
+    # canonicalized colors.
 
     train_inputs = [inp for inp, _ in train_pairs]
     train_outputs = [out for _, out in train_pairs]
     all_inputs = train_inputs + [test_input]
 
-    # Build presents for all inputs
-    presents_all = [build_present(grid) for grid in all_inputs]
+    # Compute palette map from all inputs
+    palette_map = canonicalize_palette_for_task(train_inputs, test_input)
+
+    # Apply palette map to all grids
+    def apply_palette_to_grid(grid: Grid, pmap: Dict[int, int]) -> Grid:
+        """Apply palette mapping to transform grid colors."""
+        if not pmap:
+            return grid  # No mapping needed
+        return [[pmap.get(grid[r][c], grid[r][c]) for c in range(len(grid[0]))]
+                for r in range(len(grid))]
+
+    # Canonicalize all input grids
+    canonicalized_train_inputs = [apply_palette_to_grid(g, palette_map) for g in train_inputs]
+    canonicalized_test_input = apply_palette_to_grid(test_input, palette_map)
+    canonicalized_all_inputs = canonicalized_train_inputs + [canonicalized_test_input]
+
+    # Create canonicalized train_pairs (for law extraction functions)
+    canonicalized_train_pairs = [
+        (canonicalized_train_inputs[i], train_outputs[i])
+        for i in range(len(train_inputs))
+    ]
+
+    # =========================================================================
+    # Step 2: Present all inputs (ΠG) - on CANONICALIZED grids
+    # =========================================================================
+    # Per math_spec.md §1 line 22: "store g_test so that the final output is unpresented"
+
+    # Build presents for all canonicalized inputs
+    presents_all = [build_present(grid) for grid in canonicalized_all_inputs]
     presents_train = presents_all[:len(train_inputs)]
     test_present = presents_all[len(train_inputs)]
 
@@ -106,11 +140,13 @@ def compile_theta(
     g_test = test_present.g_inverse
 
     # =========================================================================
-    # Step 2: WL union on {train inputs} ∪ {test input}
+    # Step 3: WL union on {train inputs} ∪ {test input}
     # =========================================================================
     # Per implementation_clarifications.md §1 lines 26-31:
     # "Run 1-WL on: 𝒱 = {X₁, X₂, ..., Xₘ} ∪ {X*}"
     # Per math_spec.md §3 line 48-55: "1-WL on the disjoint union (train ∪ test)"
+    #
+    # Now WL sees canonicalized colors, preventing test-only color roles
 
     role_map = wl_union(presents_all, escalate=False, max_iters=12)
 
@@ -127,24 +163,45 @@ def compile_theta(
     roles_test = len(test_roles)
     unseen_roles = len(test_roles - train_roles)
 
+    # =========================================================================
+    # Identify color-constant roles in training (for LOCAL_PAINT)
+    # =========================================================================
+    # Per clarifications: LOCAL_PAINT should only be compiled for roles that:
+    # 1. Appear in training grids
+    # 2. Are color-constant across training (all pixels with this role have same color)
+    #
+    # This prevents creating LOCAL_PAINT for test-only roles.
+
+    role_to_colors: Dict[RoleId, Set[int]] = {}  # role_id -> set of colors seen
+
+    for grid_id in range(len(train_inputs)):
+        present = presents_all[grid_id]
+        for pixel in [(r, c) for r in range(len(present.grid)) for c in range(len(present.grid[0]))]:
+            p = Pixel(pixel[0], pixel[1])
+            role_id = role_map.get((grid_id, p))
+            if role_id is not None:
+                color = present.grid[p.row][p.col]
+                if role_id not in role_to_colors:
+                    role_to_colors[role_id] = set()
+                role_to_colors[role_id].add(color)
+
+    # Filter to color-constant roles (only one color per role)
+    train_constant_roles: Dict[RoleId, int] = {}  # role_id -> constant_color
+    for role_id, colors in role_to_colors.items():
+        if len(colors) == 1:
+            # This role is color-constant in training
+            train_constant_roles[role_id] = list(colors)[0]
+
     # Count WL iterations (simplified - actual count from wl_union implementation)
     wl_iters = 12  # Placeholder - actual value from wl_union
 
     # =========================================================================
-    # Step 3: Shape meet (trains only)
+    # Step 4: Shape meet (trains only)
     # =========================================================================
     # Per math_spec.md §4 lines 61-63: "For each train input, run 1-D WL on rows/cols"
     # Shape meet uses train evidence only
 
     shape_result = unify_shape(presents_train)
-
-    # =========================================================================
-    # Step 4: Palette canonicalization (train∪test inputs)
-    # =========================================================================
-    # Per implementation_clarifications.md §2 line 58:
-    # "Per-task, pooled across all inputs (train ∪ test), not outputs"
-
-    palette_map = canonicalize_palette_for_task(train_inputs, test_input)
 
     # =========================================================================
     # Step 5: Parameter extraction (all 8 families)
@@ -164,8 +221,10 @@ def compile_theta(
         "g_test": g_test,
         "palette_map": palette_map,
         "shape": shape_result,
-        "train_pairs": train_pairs,
+        "train_pairs": canonicalized_train_pairs,  # Use canonicalized pairs
         "canvas_shape": canvas_shape,
+        "train_constant_roles": train_constant_roles,  # For LOCAL_PAINT filtering
+        "num_train_grids": len(train_inputs),  # To identify train vs test grid_ids
     }
 
     # Track which law families are used
@@ -176,7 +235,7 @@ def compile_theta(
     from arc_core.types import LocalPaintParams
 
     local_paint_params = LocalPaintParams(
-        train_pairs=train_pairs,
+        train_pairs=canonicalized_train_pairs,  # Use canonicalized pairs
         presents=presents_train,
         role_map=role_map
     )
@@ -204,6 +263,15 @@ def compile_theta(
         theta["object_arith_laws"] = object_arith_laws
         basis_used.add("TRANSLATE")
 
+        # Extract deltas from laws for init_expressions
+        deltas = set()
+        for law in object_arith_laws:
+            if law.delta is not None:
+                deltas.add(law.delta)
+        theta["deltas"] = list(deltas)
+    else:
+        theta["deltas"] = []
+
     # For init_expressions, we need a dict of components from test
     # Build from test present (overwrite the list with dict for init_expressions)
     test_components = extract_components(test_present.grid)
@@ -214,14 +282,13 @@ def compile_theta(
     theta["components_per_grid"] = components_per_grid
     # Overwrite "components" with dict for init_expressions
     theta["components"] = components_dict
-    theta["deltas"] = []  # Placeholder for deltas extracted from laws
 
     # === Family 3: Periodic/Tiling (WO-11) ===
     # Per engineering_spec.md §5.3: "Lattice: FFT ACF → HNF → D8 canonical"
 
-    # Try to detect lattice from train inputs
+    # Try to detect lattice from canonicalized train inputs
     # infer_lattice takes a list of grids
-    lattice_result = infer_lattice(train_inputs)
+    lattice_result = infer_lattice(canonicalized_train_inputs)
 
     if lattice_result is not None:
         theta["lattice"] = lattice_result
@@ -244,14 +311,15 @@ def compile_theta(
 
     # === Family 5: Histogram/Selector (WO-13) ===
     # Per engineering_spec.md §5.5: "ARGMAX_COLOR, UNIQUE_COLOR, MODE_k×k"
-    # Selectors are compiled on-demand by closures, not pre-extracted
-    # We just flag that selectors are available
-    basis_used.add("SELECTOR")
+    # TODO: Implement selector extraction
+    # For now, selectors are not extracted (WO-13 not yet implemented)
+    # Do not add to basis_used until actual selectors are extracted
+    theta["selectors"] = []  # Placeholder for future WO-13 implementation
 
     # === Family 6: Canvas Arithmetic (WO-07) ===
     # Per engineering_spec.md §5.6: "RESIZE, CONCAT, FRAME"
 
-    canvas_map = infer_canvas(train_pairs)
+    canvas_map = infer_canvas(canonicalized_train_pairs)
 
     if canvas_map is not None:
         theta["canvas_map"] = canvas_map

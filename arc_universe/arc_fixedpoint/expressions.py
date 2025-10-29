@@ -683,17 +683,25 @@ def init_expressions(theta: dict) -> Dict[Pixel, Set[Expr]]:
             candidates: Set[Expr] = set()
 
             # 1. LOCAL_PAINT expressions (WO-09)
+            # Per clarifications: Only create LOCAL_PAINT for train-proven constant roles
+            # This prevents creating expressions for test-only roles that would never be removed by closures
+            train_constant_roles = theta.get("train_constant_roles", {})
             role_map = theta.get("role_map", {})
-            for (grid_id, pixel), role_id in role_map.items():
-                if pixel == q:
-                    # Create LOCAL_PAINT expression for each color
-                    for color in range(10):
-                        expr = LocalPaintExpr(
-                            role_id=role_id,
-                            color=color,
-                            mask_type="role"
-                        )
-                        candidates.add(expr)
+
+            # Check if this pixel has a role in the test grid
+            num_train_grids = theta.get("num_train_grids", 0)
+            test_grid_id = num_train_grids  # Test grid is the last one
+
+            pixel_role = role_map.get((test_grid_id, q))
+            if pixel_role is not None and pixel_role in train_constant_roles:
+                # This role is color-constant in training - create LOCAL_PAINT with the proven color
+                proven_color = train_constant_roles[pixel_role]
+                expr = LocalPaintExpr(
+                    role_id=pixel_role,
+                    color=proven_color,
+                    mask_type="role"
+                )
+                candidates.add(expr)
 
             # 2. TRANSLATE expressions (WO-10)
             components = theta.get("components", {})
@@ -791,22 +799,19 @@ def init_expressions(theta: dict) -> Dict[Pixel, Set[Expr]]:
                 )
                 candidates.add(expr)
 
-            # CRITICAL FIX (BUG-15-01): Ensure non-empty E_q for every pixel
-            # Per engineering_spec.md §7 line 142: "At lfp U*, every pixel is singleton"
-            # Per clarifications §5 line 549: "lfp.singletons == n_pixels"
-            # Empty set cannot converge to singleton → violates spec
-            # LFP only removes (monotone), never adds → empty stays empty
-            if not candidates:
-                # Fallback: Add LOCAL_PAINT for all 10 colors
-                # At least one will be correct (enforced by T_local closure per A1)
-                # Use default role_id=0 for pixels without explicit role assignments
-                for color in range(10):
-                    expr = LocalPaintExpr(
-                        role_id=RoleId(0),  # Default fallback role
-                        color=color,
-                        mask_type="role"
-                    )
-                    candidates.add(expr)
+            # Per clarifications: Empty candidate sets for test-only pixels are OK
+            # Structural laws (PERIODIC, TRANSLATE, SELECTOR, etc.) should handle them
+            # If candidates is still empty, it means no laws apply to this pixel
+            # This may indicate:
+            # 1. Missing law extraction (bug in compile_theta)
+            # 2. Test pixel truly has no applicable laws (rare but possible)
+            #
+            # We do NOT add LOCAL_PAINT with fake role_id=0 as fallback because:
+            # - LOCAL_PAINT must only be used for train-proven constant roles
+            # - Test-only pixels must be resolved by structural laws
+            #
+            # If LFP fails to converge due to empty sets, that's a legitimate failure
+            # indicating the task requires laws not yet extracted.
 
             # Store candidates for this pixel
             U0[q] = candidates

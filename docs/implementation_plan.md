@@ -470,7 +470,7 @@ def compute_lfp(U0: Dict[Pixel, Set[Expression]],
 
 ⸻
 
-WO-18: arc_fixedpoint/eval_unpresent.py
+WO-18: arc_fixedpoint/eval_unpresent.py ✅ COMPLETED
 	•	Goal: evaluate singletons to Y^\wedge; unpresent by g_{\text{test}}^{-1}.
 	•	API: evaluate_and_unpresent(U_star, Xhat, g_test) -> Y
 	•	Tests: exact evaluation; unpresent invariance.

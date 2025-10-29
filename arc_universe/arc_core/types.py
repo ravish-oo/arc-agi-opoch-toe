@@ -100,3 +100,7 @@ class LocalPaintParams:
     train_pairs: list[tuple[Grid, Grid]]  # [(X_1, Y_1), ..., (X_m, Y_m)]
     presents: list[Present]  # Present structures for each X_i
     role_map: dict[tuple[int, Pixel], RoleId]  # From wl_union
+
+
+# Selector types for WO-13
+SelectorType = str  # "ARGMAX", "ARGMIN_NONZERO", "UNIQUE", "MODE_kxk", "PARITY"

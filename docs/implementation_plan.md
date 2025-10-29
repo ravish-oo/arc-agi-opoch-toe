@@ -253,7 +253,7 @@ def infer_canvas(train_pairs) -> CanvasMap
 
 ⸻
 
-WO-08: arc_core/components.py — Components & Hungarian match
+WO-08: arc_core/components.py — Components & Hungarian match ✅ COMPLETED
 	•	Goal: component extraction & matching; Δ with lex tie.
 	•	Inputs: present-trains; bounding boxes.
 	•	Outputs: matches, Δ, IDs.

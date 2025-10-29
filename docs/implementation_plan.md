@@ -210,7 +210,7 @@ python run_gate_b.py --limit 50    # Run Gate B on 50 random tasks
 
 ⸻
 
-WO-05: arc_core/palette.py — Orbit CPRQ + canonicalizer N
+WO-05: arc_core/palette.py — Orbit CPRQ + canonicalizer N ✅ COMPLETED
 	•	Goal: orbit kernel + input-lawful canonical palette (counts↓, first-occurrence↑, boundary-hash↑).
 	•	Inputs: train labels, present-trains.
 	•	Outputs: abstract \tilde\rho and canon mapping digits for train/test.

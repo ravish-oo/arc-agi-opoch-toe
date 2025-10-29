@@ -173,22 +173,22 @@ def PiG(X: Grid) -> Grid:
     """
     rows, cols = len(X), len(X[0])
 
-    # Diagonal flips (flip_diag_main, flip_diag_anti) are only valid for square grids
-    # For non-square grids, they cause IndexError due to dimension mismatch
-    # Only use diagonal transforms when rows == cols
-    if rows != cols:
-        # Use only non-diagonal transformations for non-square grids
-        allowed_transforms = {
-            "identity": D4_TRANSFORMATIONS["identity"],
-            "rot90": D4_TRANSFORMATIONS["rot90"],
-            "rot180": D4_TRANSFORMATIONS["rot180"],
-            "rot270": D4_TRANSFORMATIONS["rot270"],
-            "flip_h": D4_TRANSFORMATIONS["flip_h"],
-            "flip_v": D4_TRANSFORMATIONS["flip_v"],
-        }
-    else:
-        # Square grid: all D4 transformations are valid
-        allowed_transforms = D4_TRANSFORMATIONS
+    # flip_diag_main (transpose) is ALWAYS safe for any grid dimension
+    # flip_diag_anti is ONLY safe for square grids (crashes on non-square due to indexing)
+    # For idempotency, we MUST include flip_diag_main since flip_v ∘ rot270 == flip_diag_main
+    allowed_transforms = {
+        "identity": D4_TRANSFORMATIONS["identity"],
+        "rot90": D4_TRANSFORMATIONS["rot90"],
+        "rot180": D4_TRANSFORMATIONS["rot180"],
+        "rot270": D4_TRANSFORMATIONS["rot270"],
+        "flip_h": D4_TRANSFORMATIONS["flip_h"],
+        "flip_v": D4_TRANSFORMATIONS["flip_v"],
+        "flip_diag_main": D4_TRANSFORMATIONS["flip_diag_main"],  # ALWAYS safe
+    }
+
+    # Only include flip_diag_anti for square grids
+    if rows == cols:
+        allowed_transforms["flip_diag_anti"] = D4_TRANSFORMATIONS["flip_diag_anti"]
 
     candidates = []
 
@@ -220,22 +220,22 @@ def PiG_with_inverse(X: Grid) -> Tuple[Grid, str]:
     """
     rows, cols = len(X), len(X[0])
 
-    # Diagonal flips (flip_diag_main, flip_diag_anti) are only valid for square grids
-    # For non-square grids, they cause IndexError due to dimension mismatch
-    # Only use diagonal transforms when rows == cols
-    if rows != cols:
-        # Use only non-diagonal transformations for non-square grids
-        allowed_transforms = {
-            "identity": D4_TRANSFORMATIONS["identity"],
-            "rot90": D4_TRANSFORMATIONS["rot90"],
-            "rot180": D4_TRANSFORMATIONS["rot180"],
-            "rot270": D4_TRANSFORMATIONS["rot270"],
-            "flip_h": D4_TRANSFORMATIONS["flip_h"],
-            "flip_v": D4_TRANSFORMATIONS["flip_v"],
-        }
-    else:
-        # Square grid: all D4 transformations are valid
-        allowed_transforms = D4_TRANSFORMATIONS
+    # flip_diag_main (transpose) is ALWAYS safe for any grid dimension
+    # flip_diag_anti is ONLY safe for square grids (crashes on non-square due to indexing)
+    # For idempotency, we MUST include flip_diag_main since flip_v ∘ rot270 == flip_diag_main
+    allowed_transforms = {
+        "identity": D4_TRANSFORMATIONS["identity"],
+        "rot90": D4_TRANSFORMATIONS["rot90"],
+        "rot180": D4_TRANSFORMATIONS["rot180"],
+        "rot270": D4_TRANSFORMATIONS["rot270"],
+        "flip_h": D4_TRANSFORMATIONS["flip_h"],
+        "flip_v": D4_TRANSFORMATIONS["flip_v"],
+        "flip_diag_main": D4_TRANSFORMATIONS["flip_diag_main"],  # ALWAYS safe
+    }
+
+    # Only include flip_diag_anti for square grids
+    if rows == cols:
+        allowed_transforms["flip_diag_anti"] = D4_TRANSFORMATIONS["flip_diag_anti"]
 
     candidates = []
 

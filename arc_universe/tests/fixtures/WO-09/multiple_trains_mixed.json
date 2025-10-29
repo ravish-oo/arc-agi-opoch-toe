@@ -1,0 +1,43 @@
+{
+  "description": "CS-03: Multiple trains mixed - some with dimension match, some without",
+  "train_pairs": [
+    {
+      "X": [[1]],
+      "Y": [[5], [5]]
+    },
+    {
+      "X": [[1]],
+      "Y": [[5]]
+    },
+    {
+      "X": [[1]],
+      "Y": [[5]]
+    }
+  ],
+  "presents": [
+    {
+      "grid": [[1]],
+      "g_inverse": "identity"
+    },
+    {
+      "grid": [[1]],
+      "g_inverse": "identity"
+    },
+    {
+      "grid": [[1]],
+      "g_inverse": "identity"
+    }
+  ],
+  "role_map_list": [
+    {"grid_id": 0, "row": 0, "col": 0, "role": 1},
+    {"grid_id": 1, "row": 0, "col": 0, "role": 1},
+    {"grid_id": 2, "row": 0, "col": 0, "role": 1}
+  ],
+  "expected": {
+    "num_laws": 1,
+    "note": "Train 1 has mismatch (X:1×1, Y:2×1) - skipped. Trains 2,3 match - laws extracted from trains 2,3 only.",
+    "laws": [
+      {"role": 1, "color": 5}
+    ]
+  }
+}

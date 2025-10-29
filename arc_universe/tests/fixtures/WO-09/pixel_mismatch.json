@@ -1,0 +1,35 @@
+{
+  "description": "EV-03: Pixel mismatch - 1 pixel out of 6 mismatches (single pixel failure)",
+  "train_pairs": [
+    {
+      "X": [[1, 1, 1]],
+      "Y": [[5, 5, 5]]
+    },
+    {
+      "X": [[1, 1, 1]],
+      "Y": [[5, 5, 9]]
+    }
+  ],
+  "presents": [
+    {
+      "grid": [[1, 1, 1]],
+      "g_inverse": "identity"
+    },
+    {
+      "grid": [[1, 1, 1]],
+      "g_inverse": "identity"
+    }
+  ],
+  "role_map_list": [
+    {"grid_id": 0, "row": 0, "col": 0, "role": 7},
+    {"grid_id": 0, "row": 0, "col": 1, "role": 7},
+    {"grid_id": 0, "row": 0, "col": 2, "role": 7},
+    {"grid_id": 1, "row": 0, "col": 0, "role": 7},
+    {"grid_id": 1, "row": 0, "col": 1, "role": 7},
+    {"grid_id": 1, "row": 0, "col": 2, "role": 7}
+  ],
+  "expected": {
+    "num_laws": 0,
+    "note": "Role 7: 3 pixels→5 in train 1, but 2→5 and 1→9 in train 2. Single pixel mismatch means law rejected."
+  }
+}

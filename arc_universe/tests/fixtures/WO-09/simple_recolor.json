@@ -1,0 +1,40 @@
+{
+  "description": "LE-01: Simple 2-role recolor across 2 trains",
+  "train_pairs": [
+    {
+      "X": [[0, 1], [1, 0]],
+      "Y": [[2, 3], [3, 2]]
+    },
+    {
+      "X": [[0, 0], [1, 1]],
+      "Y": [[2, 2], [3, 3]]
+    }
+  ],
+  "presents": [
+    {
+      "grid": [[0, 1], [1, 0]],
+      "g_inverse": "identity"
+    },
+    {
+      "grid": [[0, 0], [1, 1]],
+      "g_inverse": "identity"
+    }
+  ],
+  "role_map_list": [
+    {"grid_id": 0, "row": 0, "col": 0, "role": 0},
+    {"grid_id": 0, "row": 0, "col": 1, "role": 1},
+    {"grid_id": 0, "row": 1, "col": 0, "role": 1},
+    {"grid_id": 0, "row": 1, "col": 1, "role": 0},
+    {"grid_id": 1, "row": 0, "col": 0, "role": 0},
+    {"grid_id": 1, "row": 0, "col": 1, "role": 0},
+    {"grid_id": 1, "row": 1, "col": 0, "role": 1},
+    {"grid_id": 1, "row": 1, "col": 1, "role": 1}
+  ],
+  "expected": {
+    "num_laws": 2,
+    "laws": [
+      {"role": 0, "color": 2},
+      {"role": 1, "color": 3}
+    ]
+  }
+}

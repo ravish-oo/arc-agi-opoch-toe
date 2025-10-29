@@ -1,0 +1,31 @@
+{
+  "description": "CS-04: Present canonical - use present.grid (canonical) not raw input",
+  "train_pairs": [
+    {
+      "X": [[9, 8], [7, 6]],
+      "Y": [[1, 2], [3, 4]]
+    }
+  ],
+  "presents": [
+    {
+      "grid": [[1, 2], [3, 4]],
+      "g_inverse": "rot180"
+    }
+  ],
+  "role_map_list": [
+    {"grid_id": 0, "row": 0, "col": 0, "role": 10},
+    {"grid_id": 0, "row": 0, "col": 1, "role": 11},
+    {"grid_id": 0, "row": 1, "col": 0, "role": 12},
+    {"grid_id": 0, "row": 1, "col": 1, "role": 13}
+  ],
+  "expected": {
+    "num_laws": 4,
+    "note": "present.grid is [[1,2],[3,4]] (canonical). Y is transformed via rot180: rot180([[1,2],[3,4]]) = [[4,3],[2,1]]",
+    "laws": [
+      {"role": 10, "color": 4},
+      {"role": 11, "color": 3},
+      {"role": 12, "color": 2},
+      {"role": 13, "color": 1}
+    ]
+  }
+}

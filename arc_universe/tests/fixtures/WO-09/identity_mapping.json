@@ -1,0 +1,43 @@
+{
+  "description": "LE-03: Identity mapping - all roles keep same color",
+  "train_pairs": [
+    {
+      "X": [[1, 2], [3, 4]],
+      "Y": [[1, 2], [3, 4]]
+    },
+    {
+      "X": [[1, 1], [3, 3]],
+      "Y": [[1, 1], [3, 3]]
+    }
+  ],
+  "presents": [
+    {
+      "grid": [[1, 2], [3, 4]],
+      "g_inverse": "identity"
+    },
+    {
+      "grid": [[1, 1], [3, 3]],
+      "g_inverse": "identity"
+    }
+  ],
+  "role_map_list": [
+    {"grid_id": 0, "row": 0, "col": 0, "role": 1},
+    {"grid_id": 0, "row": 0, "col": 1, "role": 2},
+    {"grid_id": 0, "row": 1, "col": 0, "role": 3},
+    {"grid_id": 0, "row": 1, "col": 1, "role": 4},
+    {"grid_id": 1, "row": 0, "col": 0, "role": 1},
+    {"grid_id": 1, "row": 0, "col": 1, "role": 1},
+    {"grid_id": 1, "row": 1, "col": 0, "role": 3},
+    {"grid_id": 1, "row": 1, "col": 1, "role": 3}
+  ],
+  "expected": {
+    "num_laws": 4,
+    "note": "All 4 roles are consistent (each maps to same color wherever it appears)",
+    "laws": [
+      {"role": 1, "color": 1},
+      {"role": 2, "color": 2},
+      {"role": 3, "color": 3},
+      {"role": 4, "color": 4}
+    ]
+  }
+}

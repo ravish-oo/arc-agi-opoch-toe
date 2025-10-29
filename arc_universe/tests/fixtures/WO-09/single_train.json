@@ -1,0 +1,29 @@
+{
+  "description": "EC-05: Single train - only 1 training pair (trivially consistent)",
+  "train_pairs": [
+    {
+      "X": [[1, 2, 3]],
+      "Y": [[7, 8, 9]]
+    }
+  ],
+  "presents": [
+    {
+      "grid": [[1, 2, 3]],
+      "g_inverse": "identity"
+    }
+  ],
+  "role_map_list": [
+    {"grid_id": 0, "row": 0, "col": 0, "role": 1},
+    {"grid_id": 0, "row": 0, "col": 1, "role": 2},
+    {"grid_id": 0, "row": 0, "col": 2, "role": 3}
+  ],
+  "expected": {
+    "num_laws": 3,
+    "note": "Single train - all mappings trivially consistent, extract all laws",
+    "laws": [
+      {"role": 1, "color": 7},
+      {"role": 2, "color": 8},
+      {"role": 3, "color": 9}
+    ]
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "description": "CF-01: Inconsistent mapping - role 5 maps to different colors across trains",
+  "train_pairs": [
+    {
+      "X": [[5, 1]],
+      "Y": [[3, 2]]
+    },
+    {
+      "X": [[5, 1]],
+      "Y": [[7, 2]]
+    }
+  ],
+  "presents": [
+    {
+      "grid": [[5, 1]],
+      "g_inverse": "identity"
+    },
+    {
+      "grid": [[5, 1]],
+      "g_inverse": "identity"
+    }
+  ],
+  "role_map_list": [
+    {"grid_id": 0, "row": 0, "col": 0, "role": 5},
+    {"grid_id": 0, "row": 0, "col": 1, "role": 1},
+    {"grid_id": 1, "row": 0, "col": 0, "role": 5},
+    {"grid_id": 1, "row": 0, "col": 1, "role": 1}
+  ],
+  "expected": {
+    "num_laws": 1,
+    "note": "Role 5 maps to 3 in train 1 but 7 in train 2 - inconsistent, filtered out. Role 1 maps to 2 consistently.",
+    "laws": [
+      {"role": 1, "color": 2}
+    ],
+    "filtered_roles": [5]
+  }
+}

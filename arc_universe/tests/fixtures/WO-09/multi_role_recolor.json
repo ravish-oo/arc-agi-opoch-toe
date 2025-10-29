@@ -1,0 +1,32 @@
+{
+  "description": "LE-02: Multi-role recolor - 5 roles, 1 train, all distinct colors",
+  "train_pairs": [
+    {
+      "X": [[0, 1, 2, 3, 4]],
+      "Y": [[5, 6, 7, 8, 9]]
+    }
+  ],
+  "presents": [
+    {
+      "grid": [[0, 1, 2, 3, 4]],
+      "g_inverse": "identity"
+    }
+  ],
+  "role_map_list": [
+    {"grid_id": 0, "row": 0, "col": 0, "role": 0},
+    {"grid_id": 0, "row": 0, "col": 1, "role": 1},
+    {"grid_id": 0, "row": 0, "col": 2, "role": 2},
+    {"grid_id": 0, "row": 0, "col": 3, "role": 3},
+    {"grid_id": 0, "row": 0, "col": 4, "role": 4}
+  ],
+  "expected": {
+    "num_laws": 5,
+    "laws": [
+      {"role": 0, "color": 5},
+      {"role": 1, "color": 6},
+      {"role": 2, "color": 7},
+      {"role": 3, "color": 8},
+      {"role": 4, "color": 9}
+    ]
+  }
+}

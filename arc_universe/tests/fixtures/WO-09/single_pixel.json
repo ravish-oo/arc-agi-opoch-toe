@@ -1,0 +1,24 @@
+{
+  "description": "LE-04: Single pixel grid - minimal case",
+  "train_pairs": [
+    {
+      "X": [[5]],
+      "Y": [[7]]
+    }
+  ],
+  "presents": [
+    {
+      "grid": [[5]],
+      "g_inverse": "identity"
+    }
+  ],
+  "role_map_list": [
+    {"grid_id": 0, "row": 0, "col": 0, "role": 0}
+  ],
+  "expected": {
+    "num_laws": 1,
+    "laws": [
+      {"role": 0, "color": 7}
+    ]
+  }
+}

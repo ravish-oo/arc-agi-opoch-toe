@@ -1,0 +1,59 @@
+{
+  "description": "IT-03: Full pipeline - end-to-end scenario with 3 trains, 5 roles, mixed consistency",
+  "train_pairs": [
+    {
+      "X": [[0, 1, 2, 3, 4]],
+      "Y": [[5, 6, 7, 8, 9]]
+    },
+    {
+      "X": [[0, 1, 2, 3, 4]],
+      "Y": [[5, 6, 7, 8, 9]]
+    },
+    {
+      "X": [[0, 1, 2, 3, 4]],
+      "Y": [[5, 6, 7, 8, 0]]
+    }
+  ],
+  "presents": [
+    {
+      "grid": [[0, 1, 2, 3, 4]],
+      "g_inverse": "identity"
+    },
+    {
+      "grid": [[0, 1, 2, 3, 4]],
+      "g_inverse": "identity"
+    },
+    {
+      "grid": [[0, 1, 2, 3, 4]],
+      "g_inverse": "identity"
+    }
+  ],
+  "role_map_list": [
+    {"grid_id": 0, "row": 0, "col": 0, "role": 10},
+    {"grid_id": 0, "row": 0, "col": 1, "role": 11},
+    {"grid_id": 0, "row": 0, "col": 2, "role": 12},
+    {"grid_id": 0, "row": 0, "col": 3, "role": 13},
+    {"grid_id": 0, "row": 0, "col": 4, "role": 14},
+    {"grid_id": 1, "row": 0, "col": 0, "role": 10},
+    {"grid_id": 1, "row": 0, "col": 1, "role": 11},
+    {"grid_id": 1, "row": 0, "col": 2, "role": 12},
+    {"grid_id": 1, "row": 0, "col": 3, "role": 13},
+    {"grid_id": 1, "row": 0, "col": 4, "role": 14},
+    {"grid_id": 2, "row": 0, "col": 0, "role": 10},
+    {"grid_id": 2, "row": 0, "col": 1, "role": 11},
+    {"grid_id": 2, "row": 0, "col": 2, "role": 12},
+    {"grid_id": 2, "row": 0, "col": 3, "role": 13},
+    {"grid_id": 2, "row": 0, "col": 4, "role": 14}
+  ],
+  "expected": {
+    "num_laws": 4,
+    "note": "Roles 10-13 consistent (map to 5-8). Role 14 inconsistent (9 in trains 1-2, but 0 in train 3) - filtered.",
+    "laws": [
+      {"role": 10, "color": 5},
+      {"role": 11, "color": 6},
+      {"role": 12, "color": 7},
+      {"role": 13, "color": 8}
+    ],
+    "filtered_roles": [14]
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "description": "LE-05: All pixels have same role - uniform role scenario",
+  "train_pairs": [
+    {
+      "X": [[1, 1], [1, 1]],
+      "Y": [[9, 9], [9, 9]]
+    },
+    {
+      "X": [[1, 1, 1]],
+      "Y": [[9, 9, 9]]
+    }
+  ],
+  "presents": [
+    {
+      "grid": [[1, 1], [1, 1]],
+      "g_inverse": "identity"
+    },
+    {
+      "grid": [[1, 1, 1]],
+      "g_inverse": "identity"
+    }
+  ],
+  "role_map_list": [
+    {"grid_id": 0, "row": 0, "col": 0, "role": 5},
+    {"grid_id": 0, "row": 0, "col": 1, "role": 5},
+    {"grid_id": 0, "row": 1, "col": 0, "role": 5},
+    {"grid_id": 0, "row": 1, "col": 1, "role": 5},
+    {"grid_id": 1, "row": 0, "col": 0, "role": 5},
+    {"grid_id": 1, "row": 0, "col": 1, "role": 5},
+    {"grid_id": 1, "row": 0, "col": 2, "role": 5}
+  ],
+  "expected": {
+    "num_laws": 1,
+    "laws": [
+      {"role": 5, "color": 9}
+    ]
+  }
+}

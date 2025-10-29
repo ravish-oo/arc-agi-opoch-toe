@@ -1,0 +1,34 @@
+{
+  "description": "CF-04: All inconsistent - every role maps to multiple colors, no valid laws",
+  "train_pairs": [
+    {
+      "X": [[1, 2]],
+      "Y": [[5, 6]]
+    },
+    {
+      "X": [[1, 2]],
+      "Y": [[7, 8]]
+    }
+  ],
+  "presents": [
+    {
+      "grid": [[1, 2]],
+      "g_inverse": "identity"
+    },
+    {
+      "grid": [[1, 2]],
+      "g_inverse": "identity"
+    }
+  ],
+  "role_map_list": [
+    {"grid_id": 0, "row": 0, "col": 0, "role": 1},
+    {"grid_id": 0, "row": 0, "col": 1, "role": 2},
+    {"grid_id": 1, "row": 0, "col": 0, "role": 1},
+    {"grid_id": 1, "row": 0, "col": 1, "role": 2}
+  ],
+  "expected": {
+    "num_laws": 0,
+    "note": "Both roles inconsistent - return empty list",
+    "filtered_roles": [1, 2]
+  }
+}

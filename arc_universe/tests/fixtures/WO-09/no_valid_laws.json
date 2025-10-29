@@ -1,0 +1,31 @@
+{
+  "description": "EC-04: No valid laws - all roles filtered due to inconsistency",
+  "train_pairs": [
+    {
+      "X": [[1]],
+      "Y": [[5]]
+    },
+    {
+      "X": [[1]],
+      "Y": [[6]]
+    }
+  ],
+  "presents": [
+    {
+      "grid": [[1]],
+      "g_inverse": "identity"
+    },
+    {
+      "grid": [[1]],
+      "g_inverse": "identity"
+    }
+  ],
+  "role_map_list": [
+    {"grid_id": 0, "row": 0, "col": 0, "role": 1},
+    {"grid_id": 1, "row": 0, "col": 0, "role": 1}
+  ],
+  "expected": {
+    "num_laws": 0,
+    "note": "Role 1 maps to 5 in train 1 but 6 in train 2 - inconsistent, no valid laws"
+  }
+}

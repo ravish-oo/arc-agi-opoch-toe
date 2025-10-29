@@ -1,0 +1,10 @@
+{
+  "description": "EC-01: Empty training - no training pairs provided",
+  "train_pairs": [],
+  "presents": [],
+  "role_map_list": [],
+  "expected": {
+    "num_laws": 0,
+    "note": "Empty training data - return empty list gracefully"
+  }
+}

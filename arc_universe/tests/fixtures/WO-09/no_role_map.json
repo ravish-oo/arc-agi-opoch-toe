@@ -1,0 +1,20 @@
+{
+  "description": "EC-03: No role map - empty role_map dictionary",
+  "train_pairs": [
+    {
+      "X": [[1, 2]],
+      "Y": [[5, 6]]
+    }
+  ],
+  "presents": [
+    {
+      "grid": [[1, 2]],
+      "g_inverse": "identity"
+    }
+  ],
+  "role_map_list": [],
+  "expected": {
+    "num_laws": 0,
+    "note": "Empty role map - no roles assigned, return empty list"
+  }
+}

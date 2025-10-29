@@ -268,7 +268,7 @@ def match_components(comps_X, comps_Y) -> List[Match]  # lex tie
 
 ⸻
 
-WO-09: arc_laws/local_paint.py
+WO-09: arc_laws/local_paint.py ✅ COMPLETED
 	•	Goal: per-role recolor sets.
 	•	API: build_local_paint(theta) -> List[LawInstance]
 	•	Tests: exact on trains.

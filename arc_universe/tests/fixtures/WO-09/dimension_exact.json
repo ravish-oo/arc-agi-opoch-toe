@@ -1,0 +1,37 @@
+{
+  "description": "EV-04: Dimension exact - after skipping dimension mismatch, exact match",
+  "train_pairs": [
+    {
+      "X": [[1, 2]],
+      "Y": [[1, 2], [1, 2]]
+    },
+    {
+      "X": [[1, 2]],
+      "Y": [[5, 6]]
+    }
+  ],
+  "presents": [
+    {
+      "grid": [[1, 2]],
+      "g_inverse": "identity"
+    },
+    {
+      "grid": [[1, 2]],
+      "g_inverse": "identity"
+    }
+  ],
+  "role_map_list": [
+    {"grid_id": 0, "row": 0, "col": 0, "role": 1},
+    {"grid_id": 0, "row": 0, "col": 1, "role": 2},
+    {"grid_id": 1, "row": 0, "col": 0, "role": 1},
+    {"grid_id": 1, "row": 0, "col": 1, "role": 2}
+  ],
+  "expected": {
+    "num_laws": 2,
+    "note": "Train 1 has dimension mismatch (X:1×2, Y:2×2) - skipped. Train 2 exact match - laws extracted.",
+    "laws": [
+      {"role": 1, "color": 5},
+      {"role": 2, "color": 6}
+    ]
+  }
+}

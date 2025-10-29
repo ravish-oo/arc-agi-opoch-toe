@@ -1,0 +1,40 @@
+{
+  "description": "CF-03: Partial consistency - roles 0,1 consistent, role 2 inconsistent",
+  "train_pairs": [
+    {
+      "X": [[0, 1, 2]],
+      "Y": [[5, 6, 7]]
+    },
+    {
+      "X": [[0, 1, 2]],
+      "Y": [[5, 6, 8]]
+    }
+  ],
+  "presents": [
+    {
+      "grid": [[0, 1, 2]],
+      "g_inverse": "identity"
+    },
+    {
+      "grid": [[0, 1, 2]],
+      "g_inverse": "identity"
+    }
+  ],
+  "role_map_list": [
+    {"grid_id": 0, "row": 0, "col": 0, "role": 0},
+    {"grid_id": 0, "row": 0, "col": 1, "role": 1},
+    {"grid_id": 0, "row": 0, "col": 2, "role": 2},
+    {"grid_id": 1, "row": 0, "col": 0, "role": 0},
+    {"grid_id": 1, "row": 0, "col": 1, "role": 1},
+    {"grid_id": 1, "row": 0, "col": 2, "role": 2}
+  ],
+  "expected": {
+    "num_laws": 2,
+    "note": "Roles 0,1 consistent (map to 5,6). Role 2 inconsistent (7 vs 8) - filtered.",
+    "laws": [
+      {"role": 0, "color": 5},
+      {"role": 1, "color": 6}
+    ],
+    "filtered_roles": [2]
+  }
+}

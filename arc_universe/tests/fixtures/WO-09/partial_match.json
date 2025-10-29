@@ -1,0 +1,31 @@
+{
+  "description": "EV-02: Partial match - exact on train 1, wrong on train 2",
+  "train_pairs": [
+    {
+      "X": [[3]],
+      "Y": [[7]]
+    },
+    {
+      "X": [[3]],
+      "Y": [[8]]
+    }
+  ],
+  "presents": [
+    {
+      "grid": [[3]],
+      "g_inverse": "identity"
+    },
+    {
+      "grid": [[3]],
+      "g_inverse": "identity"
+    }
+  ],
+  "role_map_list": [
+    {"grid_id": 0, "row": 0, "col": 0, "role": 3},
+    {"grid_id": 1, "row": 0, "col": 0, "role": 3}
+  ],
+  "expected": {
+    "num_laws": 0,
+    "note": "Role 3 maps to 7 in train 1 but 8 in train 2 - not exact on all trains, rejected"
+  }
+}

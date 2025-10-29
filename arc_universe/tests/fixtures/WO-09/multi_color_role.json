@@ -1,0 +1,41 @@
+{
+  "description": "CF-02: Multi-color role - same role maps to 3 different colors",
+  "train_pairs": [
+    {
+      "X": [[7]],
+      "Y": [[1]]
+    },
+    {
+      "X": [[7]],
+      "Y": [[2]]
+    },
+    {
+      "X": [[7]],
+      "Y": [[3]]
+    }
+  ],
+  "presents": [
+    {
+      "grid": [[7]],
+      "g_inverse": "identity"
+    },
+    {
+      "grid": [[7]],
+      "g_inverse": "identity"
+    },
+    {
+      "grid": [[7]],
+      "g_inverse": "identity"
+    }
+  ],
+  "role_map_list": [
+    {"grid_id": 0, "row": 0, "col": 0, "role": 10},
+    {"grid_id": 1, "row": 0, "col": 0, "role": 10},
+    {"grid_id": 2, "row": 0, "col": 0, "role": 10}
+  ],
+  "expected": {
+    "num_laws": 0,
+    "note": "Role 10 maps to colors 1, 2, 3 - inconsistent, no laws extracted",
+    "filtered_roles": [10]
+  }
+}

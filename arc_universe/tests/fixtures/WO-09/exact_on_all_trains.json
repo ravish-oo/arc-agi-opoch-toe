@@ -1,0 +1,47 @@
+{
+  "description": "EV-01: Exact on all trains - perfect match across 3 trains",
+  "train_pairs": [
+    {
+      "X": [[1, 2]],
+      "Y": [[5, 6]]
+    },
+    {
+      "X": [[1, 1]],
+      "Y": [[5, 5]]
+    },
+    {
+      "X": [[2, 2]],
+      "Y": [[6, 6]]
+    }
+  ],
+  "presents": [
+    {
+      "grid": [[1, 2]],
+      "g_inverse": "identity"
+    },
+    {
+      "grid": [[1, 1]],
+      "g_inverse": "identity"
+    },
+    {
+      "grid": [[2, 2]],
+      "g_inverse": "identity"
+    }
+  ],
+  "role_map_list": [
+    {"grid_id": 0, "row": 0, "col": 0, "role": 1},
+    {"grid_id": 0, "row": 0, "col": 1, "role": 2},
+    {"grid_id": 1, "row": 0, "col": 0, "role": 1},
+    {"grid_id": 1, "row": 0, "col": 1, "role": 1},
+    {"grid_id": 2, "row": 0, "col": 0, "role": 2},
+    {"grid_id": 2, "row": 0, "col": 1, "role": 2}
+  ],
+  "expected": {
+    "num_laws": 2,
+    "note": "Perfect exactness on all 3 trains",
+    "laws": [
+      {"role": 1, "color": 5},
+      {"role": 2, "color": 6}
+    ]
+  }
+}

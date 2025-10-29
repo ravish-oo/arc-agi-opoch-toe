@@ -1,0 +1,31 @@
+{
+  "description": "CS-01: D4 transform applied - Y requires rotation to match canonical space",
+  "train_pairs": [
+    {
+      "X": [[1, 2], [3, 4]],
+      "Y": [[5, 6], [7, 8]]
+    }
+  ],
+  "presents": [
+    {
+      "grid": [[1, 2], [3, 4]],
+      "g_inverse": "rot90"
+    }
+  ],
+  "role_map_list": [
+    {"grid_id": 0, "row": 0, "col": 0, "role": 1},
+    {"grid_id": 0, "row": 0, "col": 1, "role": 2},
+    {"grid_id": 0, "row": 1, "col": 0, "role": 3},
+    {"grid_id": 0, "row": 1, "col": 1, "role": 4}
+  ],
+  "expected": {
+    "num_laws": 4,
+    "note": "Y must be transformed to canonical space using rot270 (inverse of rot90). rot270([[5,6],[7,8]]) = [[6,8],[5,7]]",
+    "laws": [
+      {"role": 1, "color": 6},
+      {"role": 2, "color": 8},
+      {"role": 3, "color": 5},
+      {"role": 4, "color": 7}
+    ]
+  }
+}

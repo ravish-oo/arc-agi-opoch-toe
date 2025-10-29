@@ -79,6 +79,13 @@ def apply_selector_on_test(
     # Recompute histogram on X_test for this mask (per spec line 311)
     hist = _compute_histogram(mask, X_test)
 
+    # CRITICAL FIX (BUG-16-01): Check if histogram is empty
+    # Per engineering_spec.md §12 line 234: "prevents undefined histograms"
+    # When mask is "empty on test" (all pixels out of bounds), signal deletion
+    # This handles case where mask set is non-empty but produces no histogram entries
+    if not hist:
+        return (None, True)
+
     # Apply selector logic based on type
     if selector_type == "ARGMAX":
         return _argmax_color(hist), False

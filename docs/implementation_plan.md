@@ -282,7 +282,7 @@ WO-10: arc_laws/object_arith.py ✅ COMPLETED
 
 ⸻
 
-WO-11: arc_laws/periodic.py
+WO-11: arc_laws/periodic.py ⚠️ PARTIALLY DONE. STUBS IN IT NOT RESOLVED
 	•	Goal: tiling from lattice; phases.
 	•	API: build_periodic(theta) -> [...]
 	•	Tests: periodic grids; phases consistent.
@@ -326,7 +326,7 @@ WO-14: arc_laws/connect_fill.py  (new) ✅ COMPLETED
 
 ⸻
 
-WO-15: arc_fixedpoint/expressions.py
+WO-15: arc_fixedpoint/expressions.py ✅ COMPLETED
 	•	Goal: expression representation E_q(\theta), domains Dom(e).
 	•	API:
 
@@ -338,7 +338,7 @@ def init_expressions(theta) -> Dict[q, Set[Expr]]
 
 ⸻
 
-WO-16: arc_fixedpoint/closures.py
+WO-16: arc_fixedpoint/closures.py ✅ COMPLETED
 	•	Goal: Implement 8 closure functions (T_def, T_canvas, T_lattice, T_block, T_object, T_select, T_local, T_Γ).
 	•	API (8 closure functions, each monotone - removes only):
 

@@ -10,5 +10,26 @@ Modules:
 """
 
 from .expressions import Expr, init_expressions
+from .closures import (
+    apply_definedness_closure,
+    apply_canvas_closure,
+    apply_lattice_closure,
+    apply_block_closure,
+    apply_object_closure,
+    apply_selector_closure,
+    apply_local_paint_closure,
+    apply_interface_closure,
+)
 
-__all__ = ["Expr", "init_expressions"]
+__all__ = [
+    "Expr",
+    "init_expressions",
+    "apply_definedness_closure",
+    "apply_canvas_closure",
+    "apply_lattice_closure",
+    "apply_block_closure",
+    "apply_object_closure",
+    "apply_selector_closure",
+    "apply_local_paint_closure",
+    "apply_interface_closure",
+]

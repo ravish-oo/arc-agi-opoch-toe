@@ -289,7 +289,7 @@ WO-11: arc_laws/periodic.py
 
 ⸻
 
-WO-12: arc_laws/blow_block.py  (new)
+WO-12: arc_laws/blow_block.py  (new) ✅ COMPLETED
 	•	Goal: BLOWUP[k], BLOCK_SUBST[B(c)].
 	•	API: build_blow_block(theta) -> [...]
 	•	Compile: learn k + motifs per color from aligned tiles; exact check.

@@ -173,22 +173,22 @@ def PiG(X: Grid) -> Grid:
     """
     rows, cols = len(X), len(X[0])
 
-    # flip_diag_main (transpose) is ALWAYS safe for any grid dimension
-    # flip_diag_anti is ONLY safe for square grids (crashes on non-square due to indexing)
-    # For idempotency, we MUST include flip_diag_main since flip_v ∘ rot270 == flip_diag_main
-    allowed_transforms = {
-        "identity": D4_TRANSFORMATIONS["identity"],
-        "rot90": D4_TRANSFORMATIONS["rot90"],
-        "rot180": D4_TRANSFORMATIONS["rot180"],
-        "rot270": D4_TRANSFORMATIONS["rot270"],
-        "flip_h": D4_TRANSFORMATIONS["flip_h"],
-        "flip_v": D4_TRANSFORMATIONS["flip_v"],
-        "flip_diag_main": D4_TRANSFORMATIONS["flip_diag_main"],  # ALWAYS safe
-    }
-
-    # Only include flip_diag_anti for square grids
+    # D4 group is only closed for square grids
+    # For non-square grids, dimension-changing transforms (rot90, rot270, flip_diag_*)
+    # break idempotency because m×n → n×m changes competing in lex-min
+    # Only use dimension-preserving transforms for non-square grids
     if rows == cols:
-        allowed_transforms["flip_diag_anti"] = D4_TRANSFORMATIONS["flip_diag_anti"]
+        # Square grid: full D4 group (all 8 transformations preserve n×n)
+        allowed_transforms = D4_TRANSFORMATIONS
+    else:
+        # Non-square grid: only dimension-preserving transforms (4 transformations)
+        # These keep m×n → m×n, ensuring idempotency
+        allowed_transforms = {
+            "identity": D4_TRANSFORMATIONS["identity"],
+            "rot180": D4_TRANSFORMATIONS["rot180"],
+            "flip_h": D4_TRANSFORMATIONS["flip_h"],
+            "flip_v": D4_TRANSFORMATIONS["flip_v"],
+        }
 
     candidates = []
 
@@ -220,22 +220,22 @@ def PiG_with_inverse(X: Grid) -> Tuple[Grid, str]:
     """
     rows, cols = len(X), len(X[0])
 
-    # flip_diag_main (transpose) is ALWAYS safe for any grid dimension
-    # flip_diag_anti is ONLY safe for square grids (crashes on non-square due to indexing)
-    # For idempotency, we MUST include flip_diag_main since flip_v ∘ rot270 == flip_diag_main
-    allowed_transforms = {
-        "identity": D4_TRANSFORMATIONS["identity"],
-        "rot90": D4_TRANSFORMATIONS["rot90"],
-        "rot180": D4_TRANSFORMATIONS["rot180"],
-        "rot270": D4_TRANSFORMATIONS["rot270"],
-        "flip_h": D4_TRANSFORMATIONS["flip_h"],
-        "flip_v": D4_TRANSFORMATIONS["flip_v"],
-        "flip_diag_main": D4_TRANSFORMATIONS["flip_diag_main"],  # ALWAYS safe
-    }
-
-    # Only include flip_diag_anti for square grids
+    # D4 group is only closed for square grids
+    # For non-square grids, dimension-changing transforms (rot90, rot270, flip_diag_*)
+    # break idempotency because m×n → n×m changes competing in lex-min
+    # Only use dimension-preserving transforms for non-square grids
     if rows == cols:
-        allowed_transforms["flip_diag_anti"] = D4_TRANSFORMATIONS["flip_diag_anti"]
+        # Square grid: full D4 group (all 8 transformations preserve n×n)
+        allowed_transforms = D4_TRANSFORMATIONS
+    else:
+        # Non-square grid: only dimension-preserving transforms (4 transformations)
+        # These keep m×n → m×n, ensuring idempotency
+        allowed_transforms = {
+            "identity": D4_TRANSFORMATIONS["identity"],
+            "rot180": D4_TRANSFORMATIONS["rot180"],
+            "flip_h": D4_TRANSFORMATIONS["flip_h"],
+            "flip_v": D4_TRANSFORMATIONS["flip_v"],
+        }
 
     candidates = []
 

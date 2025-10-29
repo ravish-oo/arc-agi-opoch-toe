@@ -1,0 +1,29 @@
+{
+  "description": "Uniform border - RESIZE wins over FRAME by enumeration order",
+  "train_pairs": [
+    {
+      "input": [[1, 2], [3, 4]],
+      "output": [
+        [5, 5, 5, 5],
+        [5, 1, 2, 5],
+        [5, 3, 4, 5],
+        [5, 5, 5, 5]
+      ]
+    },
+    {
+      "input": [[6]],
+      "output": [
+        [5, 5, 5],
+        [5, 6, 5],
+        [5, 5, 5]
+      ]
+    }
+  ],
+  "expected": {
+    "operation": "resize",
+    "pads_crops": [1, 1, 1, 1],
+    "pad_color": 5,
+    "verified_exact": true,
+    "note": "Both RESIZE and FRAME valid. Per enumeration order, RESIZE wins."
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "description": "RESIZE vs FRAME both valid - enumeration order makes RESIZE win",
+  "train_pairs": [
+    {
+      "input": [[1, 2], [3, 4]],
+      "output": [
+        [0, 0, 0, 0],
+        [0, 1, 2, 0],
+        [0, 3, 4, 0],
+        [0, 0, 0, 0]
+      ]
+    },
+    {
+      "input": [[5, 6], [7, 8]],
+      "output": [
+        [0, 0, 0, 0],
+        [0, 5, 6, 0],
+        [0, 7, 8, 0],
+        [0, 0, 0, 0]
+      ]
+    }
+  ],
+  "expected": {
+    "operation": "resize",
+    "pads_crops": [1, 1, 1, 1],
+    "pad_color": 0,
+    "verified_exact": true,
+    "note": "Both RESIZE(1,1,1,1,pad_color=0) and FRAME(t=1,frame_color=0) produce identical output. Per enumeration order IDENTITY→RESIZE→CONCAT→RESIZE+FRAME→CONCAT+FRAME→FRAME, RESIZE wins."
+  }
+}

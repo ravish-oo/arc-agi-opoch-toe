@@ -1,0 +1,31 @@
+{
+  "description": "Vertical concatenation, k=2, no gap",
+  "train_pairs": [
+    {
+      "input": [[1, 2], [3, 4]],
+      "output": [
+        [1, 2],
+        [3, 4],
+        [1, 2],
+        [3, 4]
+      ]
+    },
+    {
+      "input": [[5, 6], [7, 8]],
+      "output": [
+        [5, 6],
+        [7, 8],
+        [5, 6],
+        [7, 8]
+      ]
+    }
+  ],
+  "expected": {
+    "operation": "concat",
+    "axis": "rows",
+    "k": 2,
+    "gap": 0,
+    "gap_color": null,
+    "verified_exact": true
+  }
+}

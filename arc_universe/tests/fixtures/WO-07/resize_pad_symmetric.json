@@ -1,0 +1,29 @@
+{
+  "description": "Symmetric padding (1 on all sides) - both RESIZE and FRAME valid, RESIZE wins by enumeration order",
+  "train_pairs": [
+    {
+      "input": [[1, 2], [3, 4]],
+      "output": [
+        [0, 0, 0, 0],
+        [0, 1, 2, 0],
+        [0, 3, 4, 0],
+        [0, 0, 0, 0]
+      ]
+    },
+    {
+      "input": [[5]],
+      "output": [
+        [0, 0, 0],
+        [0, 5, 0],
+        [0, 0, 0]
+      ]
+    }
+  ],
+  "expected": {
+    "operation": "resize",
+    "pads_crops": [1, 1, 1, 1],
+    "pad_color": 0,
+    "verified_exact": true,
+    "note": "Both RESIZE and FRAME can produce this output. Enumeration order (RESIZE before FRAME) makes RESIZE win."
+  }
+}

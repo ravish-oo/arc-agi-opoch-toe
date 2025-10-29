@@ -1,0 +1,20 @@
+{
+  "description": "Multiple valid pads -> lex-min selection (simple case)",
+  "train_pairs": [
+    {
+      "input": [[1]],
+      "output": [[0, 0, 0], [0, 1, 0], [0, 0, 0]]
+    },
+    {
+      "input": [[2, 3]],
+      "output": [[0, 0, 0, 0], [0, 2, 3, 0], [0, 0, 0, 0]]
+    }
+  ],
+  "expected": {
+    "operation": "resize",
+    "pads_crops": [1, 1, 1, 1],
+    "pad_color": 0,
+    "verified_exact": true,
+    "note": "Different input sizes make FRAME invalid, symmetric (1,1,1,1) is lex-min padding"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "description": "Over-cropping produces empty grid",
+  "train_pairs": [
+    {
+      "input": [[1, 2], [3, 4]],
+      "output": [[]]
+    }
+  ],
+  "expected": {
+    "operation": "resize",
+    "pads_crops": [-10, -10, -10, -10],
+    "note": "Degenerate case: cropped beyond size -> [[]]"
+  }
+}

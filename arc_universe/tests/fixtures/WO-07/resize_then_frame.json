@@ -1,0 +1,35 @@
+{
+  "description": "Composition: resize (pad 1) then frame (t=1, c=9) - unambiguous with 2 trains",
+  "train_pairs": [
+    {
+      "input": [[1, 2], [3, 4]],
+      "output": [
+        [9, 9, 9, 9, 9, 9],
+        [9, 0, 0, 0, 0, 9],
+        [9, 0, 1, 2, 0, 9],
+        [9, 0, 3, 4, 0, 9],
+        [9, 0, 0, 0, 0, 9],
+        [9, 9, 9, 9, 9, 9]
+      ]
+    },
+    {
+      "input": [[5]],
+      "output": [
+        [9, 9, 9, 9, 9],
+        [9, 0, 0, 0, 9],
+        [9, 0, 5, 0, 9],
+        [9, 0, 0, 0, 9],
+        [9, 9, 9, 9, 9]
+      ]
+    }
+  ],
+  "expected": {
+    "operation": "resize+frame",
+    "pads_crops": [1, 1, 1, 1],
+    "pad_color": 0,
+    "frame_color": 9,
+    "frame_thickness": 1,
+    "verified_exact": true,
+    "note": "Different input sizes make standalone FRAME invalid, must be RESIZE+FRAME"
+  }
+}

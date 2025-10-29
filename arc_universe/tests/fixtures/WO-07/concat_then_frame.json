@@ -1,0 +1,26 @@
+{
+  "description": "Composition: concat (k=2, rows) then frame (t=1, c=8)",
+  "train_pairs": [
+    {
+      "input": [[1, 2], [3, 4]],
+      "output": [
+        [8, 8, 8, 8],
+        [8, 1, 2, 8],
+        [8, 3, 4, 8],
+        [8, 1, 2, 8],
+        [8, 3, 4, 8],
+        [8, 8, 8, 8]
+      ]
+    }
+  ],
+  "expected": {
+    "operation": "concat+frame",
+    "axis": "rows",
+    "k": 2,
+    "gap": 0,
+    "gap_color": null,
+    "frame_color": 8,
+    "frame_thickness": 1,
+    "verified_exact": true
+  }
+}

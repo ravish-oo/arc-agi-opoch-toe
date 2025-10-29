@@ -1,0 +1,16 @@
+{
+  "description": "Triple concatenation (k=3)",
+  "train_pairs": [
+    {
+      "input": [[1, 2]],
+      "output": [[1, 2], [1, 2], [1, 2]]
+    }
+  ],
+  "expected": {
+    "operation": "concat",
+    "axis": "rows",
+    "k": 3,
+    "gap": 0,
+    "verified_exact": true
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "description": "Horizontal concatenation, k=2, no gap",
+  "train_pairs": [
+    {
+      "input": [[1, 2], [3, 4]],
+      "output": [[1, 2, 1, 2], [3, 4, 3, 4]]
+    },
+    {
+      "input": [[5, 6], [7, 8]],
+      "output": [[5, 6, 5, 6], [7, 8, 7, 8]]
+    }
+  ],
+  "expected": {
+    "operation": "concat",
+    "axis": "cols",
+    "k": 2,
+    "gap": 0,
+    "gap_color": null,
+    "verified_exact": true
+  }
+}

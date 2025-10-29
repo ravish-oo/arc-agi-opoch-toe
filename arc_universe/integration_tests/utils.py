@@ -257,23 +257,35 @@ def compute_summary_stats(receipts: List[Dict[str, Any]]) -> Dict[str, Any]:
     }
 
     # WL statistics
+    # Per anchor clarification: "shared_id_space" is invariant, not "unseen_roles == 0"
     if any("wl" in r for r in receipts):
         wl_receipts = [r for r in receipts if "wl" in r]
-        iters = [r["wl"]["iters"] for r in wl_receipts]
-        unseen_violations = sum(
-            1 for r in wl_receipts if r["wl"]["unseen_roles"] > 0
+
+        # Collect iterations
+        iters = [r["wl"]["iters"] for r in wl_receipts if "iters" in r["wl"]]
+
+        # Count determinism passes
+        determinism_pass = sum(
+            1 for r in wl_receipts if r["wl"].get("deterministic", False)
         )
+
+        # Count tasks with unseen roles (measurement, not failure)
+        tasks_with_unseen = sum(
+            1 for r in wl_receipts if r["wl"].get("unseen_roles", 0) > 0
+        )
+
+        # Average unseen roles when present
+        unseen_counts = [
+            r["wl"]["unseen_roles"] for r in wl_receipts if r["wl"].get("unseen_roles", 0) > 0
+        ]
+        avg_unseen_when_present = sum(unseen_counts) / len(unseen_counts) if unseen_counts else 0.0
 
         stats["wl"] = {
             "avg_iterations": sum(iters) / len(iters) if iters else 0.0,
             "max_iterations": max(iters) if iters else 0,
-            "unseen_roles_violations": unseen_violations,
-            "determinism_pass_rate": sum(
-                1 for r in wl_receipts if r["wl"].get("deterministic", False)
-            )
-            / len(wl_receipts)
-            if wl_receipts
-            else 0.0,
+            "determinism_pass_rate": determinism_pass / len(wl_receipts) if wl_receipts else 0.0,
+            "tasks_with_unseen": tasks_with_unseen,
+            "avg_unseen_when_present": avg_unseen_when_present,
         }
 
     # Shape statistics

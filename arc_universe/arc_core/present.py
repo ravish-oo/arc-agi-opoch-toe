@@ -172,12 +172,12 @@ def PiG(X: Grid) -> Grid:
         - No palette normalization here (done separately in WO-05)
     """
     rows, cols = len(X), len(X[0])
-    aspect_ratio_diff = abs(rows - cols)
 
-    # Skip diagonal transforms for extreme aspect ratios (prevents IndexError)
-    # Diagonal flips are geometrically invalid for very non-square grids
-    if aspect_ratio_diff > 5:
-        # Use only non-diagonal transformations
+    # Diagonal flips (flip_diag_main, flip_diag_anti) are only valid for square grids
+    # For non-square grids, they cause IndexError due to dimension mismatch
+    # Only use diagonal transforms when rows == cols
+    if rows != cols:
+        # Use only non-diagonal transformations for non-square grids
         allowed_transforms = {
             "identity": D4_TRANSFORMATIONS["identity"],
             "rot90": D4_TRANSFORMATIONS["rot90"],
@@ -187,7 +187,7 @@ def PiG(X: Grid) -> Grid:
             "flip_v": D4_TRANSFORMATIONS["flip_v"],
         }
     else:
-        # Use all transformations
+        # Square grid: all D4 transformations are valid
         allowed_transforms = D4_TRANSFORMATIONS
 
     candidates = []
@@ -219,12 +219,12 @@ def PiG_with_inverse(X: Grid) -> Tuple[Grid, str]:
         is the D4 operation that produced the canonical grid.
     """
     rows, cols = len(X), len(X[0])
-    aspect_ratio_diff = abs(rows - cols)
 
-    # Skip diagonal transforms for extreme aspect ratios (prevents IndexError)
-    # Diagonal flips are geometrically invalid for very non-square grids
-    if aspect_ratio_diff > 5:
-        # Use only non-diagonal transformations
+    # Diagonal flips (flip_diag_main, flip_diag_anti) are only valid for square grids
+    # For non-square grids, they cause IndexError due to dimension mismatch
+    # Only use diagonal transforms when rows == cols
+    if rows != cols:
+        # Use only non-diagonal transformations for non-square grids
         allowed_transforms = {
             "identity": D4_TRANSFORMATIONS["identity"],
             "rot90": D4_TRANSFORMATIONS["rot90"],
@@ -234,7 +234,7 @@ def PiG_with_inverse(X: Grid) -> Tuple[Grid, str]:
             "flip_v": D4_TRANSFORMATIONS["flip_v"],
         }
     else:
-        # Use all transformations
+        # Square grid: all D4 transformations are valid
         allowed_transforms = D4_TRANSFORMATIONS
 
     candidates = []

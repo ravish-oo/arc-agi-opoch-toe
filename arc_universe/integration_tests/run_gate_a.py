@@ -75,14 +75,9 @@ def validate_task_gate_a(task_id, task_dict, logger):
         # Check if all ΠG checks passed
         all_pig_idempotent = all(pig_idempotent_checks)
 
-        # Run WL union (first run)
+        # Run WL union (E4 only - E8 escalation happens via push-back in later WOs)
         logger.info(f"Task {task_id}: Running WL union (run 1)")
         role_map_1 = wl_union(presents, escalate=False, max_iters=12)
-
-        # Count iterations (approximate by checking convergence)
-        # Note: wl_union doesn't return iteration count, so we estimate it
-        # For now, we'll just note that it converged within max_iters
-        wl_iters = 12  # Conservative estimate
 
         # Extract roles
         roles_train = set()
@@ -95,6 +90,8 @@ def validate_task_gate_a(task_id, task_dict, logger):
                 roles_test.add(role_id)
 
         # Compute unseen roles (roles in test but NOT in train)
+        # Per anchor clarification: unseen_roles > 0 is ALLOWED when test has new structure
+        # The invariant is "shared ID space" (single union run), NOT "unseen_roles == 0"
         unseen_roles = roles_test - roles_train
 
         logger.info(
@@ -102,11 +99,15 @@ def validate_task_gate_a(task_id, task_dict, logger):
             f"roles_test={len(roles_test)}, unseen={len(unseen_roles)}"
         )
 
-        # Run WL union again for determinism check
-        logger.info(f"Task {task_id}: Running WL union (run 2) for determinism check")
-        role_map_2 = wl_union(presents, escalate=False, max_iters=12)
+        if len(unseen_roles) > 0:
+            logger.info(
+                f"Task {task_id}: {len(unseen_roles)} unseen roles "
+                f"(test has new input structure - this is allowed)"
+            )
 
         # Check determinism: role maps should be identical
+        logger.info(f"Task {task_id}: Running WL union (run 2) for determinism check")
+        role_map_2 = wl_union(presents, escalate=False, max_iters=12)
         deterministic = role_map_1 == role_map_2
 
         if not deterministic:
@@ -116,31 +117,35 @@ def validate_task_gate_a(task_id, task_dict, logger):
         present_data = {
             "CBC3": True,  # Always computed
             "E4": True,  # Always used
-            "E8": False,  # Not escalated in Gate A
+            "E8": False,  # E8 escalation happens via push-back (later WOs)
             "grids_canonicalized": len(all_inputs),
             "pig_idempotent": all_pig_idempotent,
         }
 
         # Build WL data
+        # Per anchor clarification: "shared_id_space" is the invariant, not "unseen_roles == 0"
         wl_data = {
-            "iters": wl_iters,
+            "iters": 12,  # Conservative estimate
             "roles_train": len(roles_train),
             "roles_test": len(roles_test),
-            "unseen_roles": len(unseen_roles),
+            "unseen_roles": len(unseen_roles),  # Measurement, not failure condition
             "deterministic": deterministic,
+            "shared_id_space": True,  # WL computed once on union (invariant)
         }
 
-        # Determine status
+        # Determine status based on CORRECT invariants
+        # Per anchor author clarification:
+        # - Assert: shared_id_space == True (WL on union, one partition)
+        # - Assert: deterministic == True (stable IDs)
+        # - Do NOT assert: unseen_roles == 0 (allowed when test has new structure)
         status = "PASS"
-        if len(unseen_roles) > 0:
+
+        if not deterministic:
             status = "FAIL"
-            logger.error(f"Task {task_id}: CRITICAL - unseen_roles > 0")
-        elif not deterministic:
-            status = "FAIL"
-            logger.error(f"Task {task_id}: CRITICAL - not deterministic")
+            logger.error(f"Task {task_id}: FAIL - determinism check failed")
         elif not all_pig_idempotent:
             status = "FAIL"
-            logger.error(f"Task {task_id}: CRITICAL - ΠG not idempotent")
+            logger.error(f"Task {task_id}: FAIL - ΠG not idempotent")
         else:
             logger.info(f"Task {task_id}: PASS")
 
@@ -232,29 +237,37 @@ def main():
         logger.info(f"  Average iterations: {stats['wl']['avg_iterations']:.1f}")
         logger.info(f"  Max iterations: {stats['wl']['max_iterations']}")
         logger.info(
-            f"  Unseen roles violations: {stats['wl']['unseen_roles_violations']}"
-        )
-        logger.info(
             f"  Determinism pass rate: {stats['wl']['determinism_pass_rate']:.2%}"
         )
+        logger.info(f"  Tasks with unseen roles: {stats['wl']['tasks_with_unseen']}")
+        logger.info(f"  Avg unseen roles (when present): {stats['wl']['avg_unseen_when_present']:.1f}")
 
     # Critical invariant checks
     logger.info("\n" + "=" * 80)
     logger.info("CRITICAL INVARIANT CHECKS")
     logger.info("=" * 80)
 
-    unseen_violations = stats["wl"]["unseen_roles_violations"]
     determinism_rate = stats["wl"]["determinism_pass_rate"]
+    tasks_with_unseen = stats["wl"]["tasks_with_unseen"]
 
-    if unseen_violations == 0:
-        logger.info("✅ unseen_roles = 0 for ALL tasks (PASS)")
-    else:
-        logger.error(f"❌ unseen_roles > 0 for {unseen_violations} tasks (FAIL)")
+    # Per anchor author clarification:
+    # - Invariant: shared_id_space == True (WL on union, one partition)
+    # - Invariant: deterministic == True (stable IDs)
+    # - NOT invariant: unseen_roles == 0 (allowed when test has new structure)
 
     if determinism_rate == 1.0:
         logger.info("✅ 100% determinism across all tasks (PASS)")
     else:
         logger.error(f"❌ Determinism rate: {determinism_rate:.2%} (FAIL)")
+
+    # Log unseen roles as measurement (not failure)
+    if tasks_with_unseen > 0:
+        logger.info(
+            f"📊 {tasks_with_unseen} tasks have unseen roles "
+            f"(test has new input structure - this is allowed)"
+        )
+    else:
+        logger.info("📊 All tasks have complete role overlap (train covers test)")
 
     logger.info("\n" + "=" * 80)
     logger.info(f"Gate A validation complete. Receipts saved to: {receipts_dir}")

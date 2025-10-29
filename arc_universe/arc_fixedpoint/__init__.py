@@ -20,6 +20,7 @@ from .closures import (
     apply_local_paint_closure,
     apply_interface_closure,
 )
+from .lfp import compute_lfp, LFPReceipt
 
 __all__ = [
     "Expr",
@@ -32,4 +33,6 @@ __all__ = [
     "apply_selector_closure",
     "apply_local_paint_closure",
     "apply_interface_closure",
+    "compute_lfp",
+    "LFPReceipt",
 ]

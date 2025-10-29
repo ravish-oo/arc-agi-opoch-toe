@@ -416,7 +416,7 @@ def apply_interface_closure(U, theta) -> U:
 
 ⸻
 
-WO-17: arc_fixedpoint/lfp.py
+WO-17: arc_fixedpoint/lfp.py ✅ COMPLETED
 	•	Goal: worklist LFP on product lattice with fixed 8-stage closure order.
 	•	API:
 

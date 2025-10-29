@@ -168,12 +168,16 @@ def validate_task_gate_b(task_id, task_dict, logger):
             "train_output_shapes": train_output_shapes,
         }
 
+        # Log unseen roles (measurement, not failure)
+        if len(unseen_roles) > 0:
+            logger.info(
+                f"Task {task_id}: {len(unseen_roles)} unseen roles "
+                f"(test has new input structure - this is allowed)"
+            )
+
         # Determine status
         status = "PASS"
-        if len(unseen_roles) > 0:
-            status = "FAIL"
-            logger.error(f"Task {task_id}: CRITICAL - unseen_roles > 0")
-        elif not deterministic:
+        if not deterministic:
             status = "FAIL"
             logger.error(f"Task {task_id}: CRITICAL - not deterministic")
         elif not all_pig_idempotent:
@@ -274,11 +278,10 @@ def main():
         logger.info(f"  Average iterations: {stats['wl']['avg_iterations']:.1f}")
         logger.info(f"  Max iterations: {stats['wl']['max_iterations']}")
         logger.info(
-            f"  Unseen roles violations: {stats['wl']['unseen_roles_violations']}"
-        )
-        logger.info(
             f"  Determinism pass rate: {stats['wl']['determinism_pass_rate']:.2%}"
         )
+        logger.info(f"  Tasks with unseen roles: {stats['wl']['tasks_with_unseen']}")
+        logger.info(f"  Avg unseen roles (when present): {stats['wl']['avg_unseen_when_present']:.1f}")
 
     if "shape" in stats:
         logger.info(f"\nShape Statistics:")
@@ -294,18 +297,27 @@ def main():
     logger.info("CRITICAL INVARIANT CHECKS")
     logger.info("=" * 80)
 
-    unseen_violations = stats["wl"]["unseen_roles_violations"]
     determinism_rate = stats["wl"]["determinism_pass_rate"]
+    tasks_with_unseen = stats["wl"]["tasks_with_unseen"]
 
-    if unseen_violations == 0:
-        logger.info("✅ unseen_roles = 0 for ALL tasks (PASS)")
-    else:
-        logger.error(f"❌ unseen_roles > 0 for {unseen_violations} tasks (FAIL)")
+    # Per anchor author clarification:
+    # - Invariant: shared_id_space == True (WL on union, one partition)
+    # - Invariant: deterministic == True (stable IDs)
+    # - NOT invariant: unseen_roles == 0 (allowed when test has new structure)
 
     if determinism_rate == 1.0:
         logger.info("✅ 100% determinism across all tasks (PASS)")
     else:
         logger.error(f"❌ Determinism rate: {determinism_rate:.2%} (FAIL)")
+
+    # Log unseen roles as measurement (not failure)
+    if tasks_with_unseen > 0:
+        logger.info(
+            f"📊 {tasks_with_unseen} tasks have unseen roles "
+            f"(test has new input structure - this is allowed)"
+        )
+    else:
+        logger.info("📊 All tasks have complete role overlap (train covers test)")
 
     logger.info("\n" + "=" * 80)
     logger.info(f"Gate B validation complete. Receipts saved to: {receipts_dir}")

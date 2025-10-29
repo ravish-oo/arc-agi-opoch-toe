@@ -1,0 +1,11 @@
+{
+  "description": "180° rotation of d8_base",
+  "grid": [
+    [4, 3, 4, 3],
+    [2, 1, 2, 1],
+    [4, 3, 4, 3],
+    [2, 1, 2, 1]
+  ],
+  "expected_periods": [2, 2],
+  "note": "180° rotation should produce D8-equivalent basis"
+}

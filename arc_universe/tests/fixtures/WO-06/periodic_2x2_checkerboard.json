@@ -1,0 +1,11 @@
+{
+  "description": "2×2 checkerboard pattern (minimal periodic)",
+  "grid": [
+    [0, 1, 0, 1, 0, 1],
+    [1, 0, 1, 0, 1, 0],
+    [0, 1, 0, 1, 0, 1],
+    [1, 0, 1, 0, 1, 0]
+  ],
+  "expected_periods": [2, 2],
+  "expected_method": "FFT"
+}

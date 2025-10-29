@@ -1,0 +1,11 @@
+{
+  "description": "Horizontal flip of d8_base",
+  "grid": [
+    [2, 1, 2, 1],
+    [4, 3, 4, 3],
+    [2, 1, 2, 1],
+    [4, 3, 4, 3]
+  ],
+  "expected_periods": [2, 2],
+  "note": "Horizontal flip should produce D8-equivalent basis"
+}

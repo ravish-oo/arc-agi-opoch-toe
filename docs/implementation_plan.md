@@ -239,7 +239,7 @@ def infer_lattice(Xs: List[Grid]) -> Lattice  # includes basis, periods, method
 
 ⸻
 
-WO-07: arc_core/canvas.py — Canvas maps (finite verification)
+WO-07: arc_core/canvas.py — Canvas maps (finite verification) ✅ COMPLETED
 	•	Goal: determine RESIZE/CONCAT/FRAME transforms from finite candidate set.
 	•	Inputs: (X_i, Y_i).
 	•	Outputs: CanvasMap with params (axis, pads/crops, gaps, frame color/width).

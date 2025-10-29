@@ -54,3 +54,18 @@ class Present:
     row_members: dict[int, list[Pixel]]  # Pixels per row
     col_members: dict[int, list[Pixel]]  # Pixels per column
     g_inverse: str  # Transformation name to unpresent (e.g., "rot90", "flip_h")
+
+
+@dataclass
+class Lattice:
+    """
+    Lattice structure for periodic/tiling detection (per WO-06).
+
+    Contains the canonical lattice basis and periods:
+    - basis: 2×2 HNF basis [[v1_r, v1_c], [v2_r, v2_c]] after D8 canonicalization
+    - periods: [period_row, period_col] derived from HNF
+    - method: "FFT" or "KMP" indicating detection method used
+    """
+    basis: list[list[int]]  # 2×2 HNF basis in canonical form
+    periods: list[int]  # [period_row, period_col]
+    method: str  # "FFT" or "KMP"

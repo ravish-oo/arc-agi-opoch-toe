@@ -1,0 +1,13 @@
+{
+  "description": "Column-only periodicity",
+  "grid": [
+    [1, 2, 3, 4, 5, 6],
+    [7, 8, 9, 0, 1, 2],
+    [1, 2, 3, 4, 5, 6],
+    [7, 8, 9, 0, 1, 2],
+    [1, 2, 3, 4, 5, 6]
+  ],
+  "expected_periods": [2, 1],
+  "expected_method": "KMP",
+  "note": "Only rows repeat, columns vary - triggers KMP fallback"
+}

@@ -1,0 +1,12 @@
+{
+  "description": "Uniform grid (single color) - degenerate ACF",
+  "grid": [
+    [5, 5, 5, 5, 5],
+    [5, 5, 5, 5, 5],
+    [5, 5, 5, 5, 5],
+    [5, 5, 5, 5, 5]
+  ],
+  "expected_lattice": null,
+  "expected_method": "KMP",
+  "note": "Degenerate case should return null or trigger KMP fallback"
+}

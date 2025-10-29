@@ -1,0 +1,11 @@
+{
+  "description": "Base grid for D8 invariance testing",
+  "grid": [
+    [1, 2, 1, 2],
+    [3, 4, 3, 4],
+    [1, 2, 1, 2],
+    [3, 4, 3, 4]
+  ],
+  "expected_periods": [2, 2],
+  "note": "Base grid with 2x2 tiling for D8 testing"
+}

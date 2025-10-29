@@ -1,0 +1,11 @@
+{
+  "description": "Vertical flip of d8_base",
+  "grid": [
+    [3, 4, 3, 4],
+    [1, 2, 1, 2],
+    [3, 4, 3, 4],
+    [1, 2, 1, 2]
+  ],
+  "expected_periods": [2, 2],
+  "note": "Vertical flip should produce D8-equivalent basis"
+}

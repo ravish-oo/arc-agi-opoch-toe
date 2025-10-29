@@ -1,0 +1,13 @@
+{
+  "description": "Diagonal stripe pattern (non-axis-aligned lattice)",
+  "grid": [
+    [1, 0, 0, 1, 0, 0, 1, 0],
+    [0, 1, 0, 0, 1, 0, 0, 1],
+    [0, 0, 1, 0, 0, 1, 0, 0],
+    [1, 0, 0, 1, 0, 0, 1, 0],
+    [0, 1, 0, 0, 1, 0, 0, 1],
+    [0, 0, 1, 0, 0, 1, 0, 0]
+  ],
+  "expected_method": "FFT",
+  "note": "FFT should detect non-axis-aligned basis"
+}

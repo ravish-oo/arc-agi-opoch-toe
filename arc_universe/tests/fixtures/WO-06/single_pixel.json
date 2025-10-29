@@ -1,0 +1,6 @@
+{
+  "description": "1×1 grid (trivial case)",
+  "grid": [[7]],
+  "expected_lattice": null,
+  "note": "Too small for meaningful periodicity"
+}

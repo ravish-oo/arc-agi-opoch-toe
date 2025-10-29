@@ -81,9 +81,21 @@ def flip_diag_main(grid: Grid) -> Grid:
 
 
 def flip_diag_anti(grid: Grid) -> Grid:
-    """Flip over anti-diagonal (top-right to bottom-left)."""
+    """
+    Flip over anti-diagonal (top-right to bottom-left).
+
+    BUG FIX (Gate E): Diagonal flips MUST swap dimensions for non-square grids.
+    Per math_spec.md line 18: D_4 dihedral group requires proper reflections.
+
+    For H×W input → W×H output.
+    Anti-diagonal: (r,c) ↦ (cols-1-c, rows-1-r)
+    """
     rows, cols = len(grid), len(grid[0])
-    return [[grid[rows - 1 - c][cols - 1 - r] for c in range(cols)] for r in range(rows)]
+    # FIXED: Output dimensions are cols×rows (swapped)
+    # For result[new_r][new_c], read from grid[rows - 1 - new_c][cols - 1 - new_r]
+    return [[grid[rows - 1 - new_c][cols - 1 - new_r]
+             for new_c in range(rows)]
+            for new_r in range(cols)]
 
 
 # D4 group: identity + 7 transformations

@@ -190,7 +190,9 @@ class TranslateExpr(Expr):
             return False
 
         # Check if source pixel is in this component
-        comp_pixels = comp.get("pixels", set())
+        # BUG FIX (Gate E): comp is Component dataclass, not dict
+        # Per arc_core/components.py:52, pixels is a frozenset attribute
+        comp_pixels = comp.pixels
         return source_pixel in comp_pixels
 
 

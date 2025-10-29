@@ -1,0 +1,8 @@
+{
+  "description": "Both X and Y empty - returns empty match list",
+  "grid_X": [],
+  "grid_Y": [],
+  "expected": {
+    "num_matches": 0
+  }
+}

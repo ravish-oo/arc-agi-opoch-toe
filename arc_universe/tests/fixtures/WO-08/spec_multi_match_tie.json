@@ -1,0 +1,10 @@
+{
+  "description": "Multiple X-Y pairs with identical costs - spec-mandated scenario (line 267)",
+  "grid_X": [[1, 0, 2]],
+  "grid_Y": [[1, 0, 2]],
+  "expected": {
+    "num_matches": 3,
+    "note": "All three components are identical in X and Y (zero cost). Tests deterministic tie-breaking when multiple pairs have same cost.",
+    "deterministic_matching": true
+  }
+}

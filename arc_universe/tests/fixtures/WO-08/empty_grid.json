@@ -1,0 +1,7 @@
+{
+  "description": "Empty grid - should return empty component list",
+  "grid": [],
+  "expected": {
+    "num_components": 0
+  }
+}

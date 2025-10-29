@@ -1,0 +1,28 @@
+{
+  "description": "Equal-area components - tests centroid tie-breaking (spec-mandated scenario)",
+  "grid": [[1, 1, 0, 0], [0, 0, 2, 2]],
+  "expected": {
+    "num_components": 3,
+    "note": "Both color 1 and color 2 have area=2. Centroid breaks tie. Color 1 centroid=(0,0.5), Color 2 centroid=(1,2.5). Component at (0,0) comes first.",
+    "component_0": {
+      "color": 1,
+      "area": 2,
+      "lex_min": [0, 0],
+      "centroid_num": [0, 1],
+      "centroid_den": 2,
+      "note": "Centroid = (0/2, 1/2) = (0, 0.5)"
+    },
+    "component_1": {
+      "color": 2,
+      "area": 2,
+      "lex_min": [1, 2],
+      "centroid_num": [2, 5],
+      "centroid_den": 2,
+      "note": "Centroid = (2/2, 5/2) = (1, 2.5)"
+    },
+    "component_2": {
+      "color": 0,
+      "area": 4
+    }
+  }
+}

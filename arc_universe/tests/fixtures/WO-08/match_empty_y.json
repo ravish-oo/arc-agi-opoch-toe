@@ -1,0 +1,10 @@
+{
+  "description": "Non-empty X, empty Y - all X components unmatched",
+  "grid_X": [[1, 0], [0, 1]],
+  "grid_Y": [],
+  "expected": {
+    "num_matches": 2,
+    "note": "All X components have comp_Y_id=-1 (dummy), delta=(0,0)",
+    "all_matches_have_dummy_Y": true
+  }
+}

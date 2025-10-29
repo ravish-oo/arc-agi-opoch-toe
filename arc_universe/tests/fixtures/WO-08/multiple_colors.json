@@ -1,0 +1,28 @@
+{
+  "description": "2x2 grid with 4 different colors - 4 single-pixel components",
+  "grid": [[1, 2], [3, 4]],
+  "expected": {
+    "num_components": 4,
+    "note": "IDs assigned by lex_min (row-major): (0,0) < (0,1) < (1,0) < (1,1)",
+    "component_0": {
+      "color": 1,
+      "lex_min": [0, 0],
+      "area": 1
+    },
+    "component_1": {
+      "color": 2,
+      "lex_min": [0, 1],
+      "area": 1
+    },
+    "component_2": {
+      "color": 3,
+      "lex_min": [1, 0],
+      "area": 1
+    },
+    "component_3": {
+      "color": 4,
+      "lex_min": [1, 1],
+      "area": 1
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "description": "Translated component - tests delta computation",
+  "grid_X": [[1, 0, 0], [0, 0, 0], [0, 0, 0]],
+  "grid_Y": [[0, 0, 0], [0, 0, 0], [0, 0, 1]],
+  "expected": {
+    "num_matches": 2,
+    "note": "Single pixel of color 1 moves from (0,0) to (2,2): delta=(2,2)",
+    "match_color_1": {
+      "comp_X_id": 0,
+      "comp_Y_id": 0,
+      "delta": [2, 2],
+      "note": "lex_min_X=(0,0), lex_min_Y=(2,2), delta=Y-X=(2,2)"
+    }
+  }
+}

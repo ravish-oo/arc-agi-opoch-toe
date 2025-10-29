@@ -1,0 +1,14 @@
+{
+  "description": "Diagonal grid - all pixels connected via 8-CC",
+  "grid": [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+  "expected": {
+    "num_components": 2,
+    "note": "Color 1 forms 1 component via diagonal 8-CC. Color 0 forms separate components.",
+    "component_color_1": {
+      "color": 1,
+      "area": 3,
+      "lex_min": [0, 0],
+      "pixels": [[0, 0], [1, 1], [2, 2]]
+    }
+  }
+}

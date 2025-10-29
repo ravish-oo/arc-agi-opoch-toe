@@ -1,0 +1,10 @@
+{
+  "description": "Equal component counts - perfect matching with no dummies",
+  "grid_X": [[1], [2]],
+  "grid_Y": [[1], [2]],
+  "expected": {
+    "num_matches": 2,
+    "note": "Equal counts means all matched, no -1 IDs",
+    "no_dummies": true
+  }
+}

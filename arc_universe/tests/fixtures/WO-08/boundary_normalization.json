@@ -1,0 +1,13 @@
+{
+  "description": "Boundary normalization - same L-shape at (0,0) and (5,5)",
+  "grid_X": [[1, 1], [1, 0]],
+  "grid_Y": [[0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 1, 1], [0, 0, 0, 0, 0, 1, 0]],
+  "expected": {
+    "note": "Same L-shape at different positions. After normalization, boundaries should be identical → boundary_diff=0.",
+    "match_L_shape": {
+      "delta": [5, 5],
+      "boundary_diff_should_be_zero": true,
+      "note": "Both boundaries normalized to (0,0) before overlap computation"
+    }
+  }
+}

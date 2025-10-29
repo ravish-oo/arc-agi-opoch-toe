@@ -1,0 +1,29 @@
+{
+  "description": "Centroid rational comparison - tests cross-multiplication (no float division)",
+  "grid": [[1, 1, 0], [0, 0, 2]],
+  "expected": {
+    "num_components": 3,
+    "note": "Color 1: 2 pixels at (0,0) and (0,1), centroid=(0,1)/2. Color 2: 1 pixel at (1,2), centroid=(1,2)/1. Compare (0,1)/2 vs (1,2)/1 using cross-multiplication: 0*1 vs 1*2 → 0 < 2.",
+    "component_0": {
+      "color": 1,
+      "area": 2,
+      "centroid_num": [0, 1],
+      "centroid_den": 2,
+      "note": "Centroid = (0/2, 1/2)"
+    },
+    "component_1": {
+      "color": 0,
+      "area": 2,
+      "centroid_num": [1, 2],
+      "centroid_den": 2,
+      "note": "Centroid = (1/2, 2/2)"
+    },
+    "component_2": {
+      "color": 2,
+      "area": 1,
+      "centroid_num": [1, 2],
+      "centroid_den": 1,
+      "note": "Centroid = (1/1, 2/1)"
+    }
+  }
+}

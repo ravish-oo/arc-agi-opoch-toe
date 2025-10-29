@@ -225,7 +225,7 @@ def canonicalize_palette(abstract_grid, obs) -> (digit_grid, perm)
 
 ⸻
 
-WO-06: arc_core/lattice.py — FFT/HNF lattice (+ 2D KMP fallback)
+WO-06: arc_core/lattice.py — FFT/HNF lattice (+ 2D KMP fallback) ✅ COMPLETED
 	•	Goal: find periodic basis deterministically.
 	•	Inputs: present-trains; grids.
 	•	Outputs: (basis, method); method ∈ {FFT, KMP}.

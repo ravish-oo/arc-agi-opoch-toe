@@ -1,0 +1,20 @@
+{
+  "description": "X-shape - tests 8-connected components (diagonal connectivity)",
+  "grid": [[1, 0, 1], [0, 1, 0], [1, 0, 1]],
+  "expected": {
+    "num_components": 2,
+    "note": "Color 1 forms single 8-CC component (5 pixels via diagonals). Color 0 forms one 4-pixel component.",
+    "component_color_1": {
+      "color": 1,
+      "area": 5,
+      "lex_min": [0, 0],
+      "pixels": [[0, 0], [0, 2], [1, 1], [2, 0], [2, 2]],
+      "note": "All 5 pixels of color 1 connected via 8-connectivity (diagonals)"
+    },
+    "component_color_0": {
+      "color": 0,
+      "area": 4,
+      "pixels": [[0, 1], [1, 0], [1, 2], [2, 1]]
+    }
+  }
+}

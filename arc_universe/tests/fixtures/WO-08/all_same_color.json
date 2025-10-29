@@ -1,0 +1,12 @@
+{
+  "description": "All same color - single 4-pixel component",
+  "grid": [[2, 2], [2, 2]],
+  "expected": {
+    "num_components": 1,
+    "component_0": {
+      "color": 2,
+      "area": 4,
+      "lex_min": [0, 0]
+    }
+  }
+}

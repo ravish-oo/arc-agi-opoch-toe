@@ -1,0 +1,9 @@
+{
+  "description": "Lex cost ordering - inertia dominates (HM-09)",
+  "grid_X": [[1, 1], [1, 1]],
+  "grid_Y": [[2], [3]],
+  "expected": {
+    "note": "X has 2x2 square (high inertia), Y has two 1-pixel components (low inertia). Cost ordering must prioritize inertia difference.",
+    "inertia_dominates": true
+  }
+}

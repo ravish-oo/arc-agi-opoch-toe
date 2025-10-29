@@ -1,0 +1,23 @@
+{
+  "description": "Two separated components, same color - tests multiple components per color",
+  "grid": [[1, 0, 1]],
+  "expected": {
+    "num_components": 3,
+    "note": "Two color-1 components at (0,0) and (0,2), one color-0 component at (0,1)",
+    "component_0": {
+      "color": 1,
+      "area": 1,
+      "lex_min": [0, 0]
+    },
+    "component_1": {
+      "color": 0,
+      "area": 1,
+      "lex_min": [0, 1]
+    },
+    "component_2": {
+      "color": 1,
+      "area": 1,
+      "lex_min": [0, 2]
+    }
+  }
+}

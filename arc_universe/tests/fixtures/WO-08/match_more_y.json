@@ -1,0 +1,10 @@
+{
+  "description": "More Y than X - tests unmatched Y with dummy X",
+  "grid_X": [[1], [2]],
+  "grid_Y": [[1], [2], [3]],
+  "expected": {
+    "num_matches": 3,
+    "note": "2 real matches, 1 Y component with comp_X_id=-1",
+    "num_unmatched_Y": 1
+  }
+}

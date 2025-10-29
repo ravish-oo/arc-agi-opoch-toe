@@ -1,0 +1,20 @@
+{
+  "description": "L-shape component - tests bbox and area",
+  "grid": [[1, 0, 0], [1, 0, 0], [1, 1, 1]],
+  "expected": {
+    "num_components": 2,
+    "component_color_1": {
+      "color": 1,
+      "area": 5,
+      "lex_min": [0, 0],
+      "bbox": [0, 2, 0, 2],
+      "pixels": [[0, 0], [1, 0], [2, 0], [2, 1], [2, 2]],
+      "centroid_num": [5, 3],
+      "centroid_den": 5
+    },
+    "component_color_0": {
+      "color": 0,
+      "area": 4
+    }
+  }
+}

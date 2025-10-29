@@ -1,0 +1,16 @@
+{
+  "description": "Identical components - zero cost match, zero delta",
+  "grid_X": [[1, 1], [1, 1]],
+  "grid_Y": [[1, 1], [1, 1]],
+  "expected": {
+    "num_matches": 1,
+    "note": "Both grids identical (single 4-pixel component), perfect match with zero cost and zero delta",
+    "match_0": {
+      "comp_X_id": 0,
+      "comp_Y_id": 0,
+      "delta": [0, 0],
+      "cost": 0,
+      "note": "Color 1 component (4 pixels) matches itself perfectly"
+    }
+  }
+}

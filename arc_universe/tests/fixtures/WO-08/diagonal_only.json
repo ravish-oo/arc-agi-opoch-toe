@@ -1,0 +1,14 @@
+{
+  "description": "Diagonal-only connection - verifies 8-CC (not 4-CC)",
+  "grid": [[1, 0], [0, 1]],
+  "expected": {
+    "num_components": 1,
+    "note": "Two pixels of color 1 connected via diagonal (8-CC). If 4-CC used, would be 2 components.",
+    "component_0": {
+      "color": 1,
+      "area": 2,
+      "lex_min": [0, 0],
+      "pixels": [[0, 0], [1, 1]]
+    }
+  }
+}

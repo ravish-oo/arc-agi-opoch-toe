@@ -1,0 +1,13 @@
+{
+  "description": "5x5 grid all same color - large single component",
+  "grid": [[7, 7, 7, 7, 7], [7, 7, 7, 7, 7], [7, 7, 7, 7, 7], [7, 7, 7, 7, 7], [7, 7, 7, 7, 7]],
+  "expected": {
+    "num_components": 1,
+    "component_0": {
+      "color": 7,
+      "area": 25,
+      "lex_min": [0, 0],
+      "bbox": [0, 4, 0, 4]
+    }
+  }
+}

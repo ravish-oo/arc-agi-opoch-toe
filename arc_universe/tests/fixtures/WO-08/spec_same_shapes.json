@@ -1,0 +1,15 @@
+{
+  "description": "Same shapes at different positions - spec-mandated scenario (line 267)",
+  "grid_X": [[1, 1], [1, 0]],
+  "grid_Y": [[0, 0, 0], [0, 1, 1], [0, 1, 0]],
+  "expected": {
+    "num_matches": 2,
+    "note": "L-shape in X matches L-shape in Y (translated). Same shape = zero boundary_diff.",
+    "match_same_shape": {
+      "shape": "L-shape",
+      "delta": [1, 1],
+      "boundary_diff": 0,
+      "note": "Identical shapes have zero boundary difference after normalization"
+    }
+  }
+}

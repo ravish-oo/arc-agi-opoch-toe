@@ -1,0 +1,23 @@
+{
+  "description": "Plus-shape - CRITICAL test for E4 boundary detection (not E8)",
+  "grid": [[0, 1, 0], [1, 1, 1], [0, 1, 0]],
+  "expected": {
+    "num_components": 2,
+    "note": "Color 1 (plus) has 5 pixels. E4 boundary = 12 pixels (outer perimeter). E8 boundary would be 8 pixels (diamond). This tests that boundary uses 4-neighbors only.",
+    "component_color_1": {
+      "color": 1,
+      "area": 5,
+      "lex_min": [0, 1],
+      "pixels": [[0, 1], [1, 0], [1, 1], [1, 2], [2, 1]],
+      "boundary_size_e4": 12,
+      "boundary_size_e8_wrong": 8,
+      "note": "If E8 used, boundary would be 8. If E4 used correctly, boundary is 12."
+    },
+    "component_color_0": {
+      "color": 0,
+      "area": 4,
+      "lex_min": [0, 0],
+      "pixels": [[0, 0], [0, 2], [2, 0], [2, 2]]
+    }
+  }
+}

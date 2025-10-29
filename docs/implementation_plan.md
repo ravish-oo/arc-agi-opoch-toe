@@ -282,7 +282,7 @@ WO-10: arc_laws/object_arith.py ✅ COMPLETED
 
 ⸻
 
-WO-11: arc_laws/periodic.py ⚠️ PARTIALLY DONE. STUBS IN IT NOT RESOLVED
+WO-11: arc_laws/periodic.py ✅ COMPLETED
 	•	Goal: tiling from lattice; phases.
 	•	API: build_periodic(theta) -> [...]
 	•	Tests: periodic grids; phases consistent.

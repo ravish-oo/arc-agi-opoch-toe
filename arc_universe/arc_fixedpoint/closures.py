@@ -431,52 +431,43 @@ def apply_object_closure(
                 # Per clarifications.md line 299: "TRANSLATE/COPY/RECOLOR with wrong Δ or colors"
                 # Check if delta matches the compiled deltas in theta
                 if expr.kind == "TRANSLATE":
-                    # Check output size (TRANSLATE shouldn't change grid size)
+                    # GROUNDED FIX per clarifications line 299:
+                    # "T_object | TRANSLATE/COPY/RECOLOR with wrong Δ or colors"
+                    #
+                    # Per architecture: U is per-pixel. For THIS pixel q,
+                    # check if THIS expression works on training grids.
+                    #
+                    # For TRANSLATE with delta (dr, dc):
+                    #   - Reads from X_i[q.row-dr][q.col-dc]
+                    #   - Should produce Y_i[q.row][q.col]
+
                     rows_x, cols_x = len(X_i), len(X_i[0])
-                    if rows_x != rows_y or cols_x != cols_y:
-                        # TRANSLATE changing size is wrong
+                    dr, dc = expr.delta
+
+                    # Check THIS pixel q on THIS training pair
+                    r, c = q.row, q.col
+                    src_r, src_c = r - dr, c - dc
+
+                    # Source must be in bounds
+                    if not (0 <= src_r < rows_x and 0 <= src_c < cols_x):
+                        # Can't translate from out of bounds
                         exact = False
                         break
 
-                    # Check if delta matches compiled theta
-                    compiled_deltas = theta.get("deltas", {})
-                    if expr.component_id in compiled_deltas:
-                        expected_delta = compiled_deltas[expr.component_id]
-                        if expr.delta != expected_delta:
-                            # Wrong delta → remove expression
-                            exact = False
-                            break
-
-                # For TRANSLATE/COPY: check if transformation is correct on ALL pixels
-                # Not just pixels where Dom=True, because wrong Δ means component in wrong place
-                for r in range(rows_y):
-                    for c in range(cols_y):
-                        q_train = Pixel(r, c)
-                        try:
-                            # For TRANSLATE with wrong Δ, we need to check ALL pixels
-                            # If Dom is False but Y_i expects non-background, that's a mismatch
-                            is_defined = expr.Dom(q_train, X_i, theta)
-
-                            if is_defined:
-                                eval_result = expr.eval(q_train, X_i, theta)
-                                expected = Y_i[r][c]
-                                if eval_result != expected:
-                                    exact = False
-                                    break
-                            else:
-                                # Expression not defined at this pixel
-                                # For TRANSLATE: if Y_i has non-zero here, might be wrong Δ
-                                # But this is tricky - other expressions might paint this pixel
-                                # So we can't fail just because Dom is False
-                                # The real check is: does the overall composition work?
-                                # For now, just trust Dom + eval for defined pixels
-                                pass
-
-                        except (IndexError, KeyError, AttributeError):
-                            exact = False
-                            break
-                    if not exact:
+                    # Check within output bounds
+                    if not (0 <= r < rows_y and 0 <= c < cols_y):
+                        exact = False
                         break
+
+                    # TRANSLATE reads from X_i[src_r][src_c]
+                    src_color = X_i[src_r][src_c]
+                    tgt_color = Y_i[r][c]
+
+                    # If source is non-background, it must match target
+                    if src_color != 0 and src_color != tgt_color:
+                        exact = False
+                        break
+
                 if not exact:
                     break
 

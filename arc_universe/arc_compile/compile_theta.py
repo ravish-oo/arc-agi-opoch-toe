@@ -45,6 +45,7 @@ from arc_laws.connect_fill import build_connect_fill
 from arc_laws.local_paint import build_local_paint
 from arc_laws.object_arith import build_object_arith
 from arc_laws.periodic import build_periodic
+from arc_compile.extract_masks_anchors import extract_fill_masks, extract_connect_anchors
 
 
 def compile_theta(
@@ -329,12 +330,54 @@ def compile_theta(
     # === Family 8: Region Fill (WO-14) ===
     # Per engineering_spec.md §5.7-5.8: "CONNECT_ENDPOINTS, REGION_FILL"
 
+    # Extract masks and anchors from present (deterministic, integer, A0-compliant)
+    # Per engineering_spec.md line 108: "Masks are present-definable"
+    # Per engineering_spec.md line 121: "enumerate variants, closures filter"
+    mask_specs = extract_fill_masks(canonicalized_train_pairs, presents_train, theta)
+    anchor_specs = extract_connect_anchors(canonicalized_train_pairs, presents_train)
+
+    # Populate theta with masks/anchors for build_connect_fill
+    # Per WO-19: masks now use role-based MaskSpec (not pixel coordinates)
+    theta["masks"] = mask_specs  # List of {"mask_spec": MaskSpec, "selector_type": str, "k": ...}
+    theta["anchors"] = anchor_specs  # List of {"anchor1": Pixel, "anchor2": Pixel, ...}
+
     connect_fill_laws = build_connect_fill(theta)
 
     if connect_fill_laws:
         theta["connect_fill_laws"] = connect_fill_laws
-        basis_used.add("CONNECT")
-        basis_used.add("FILL")
+        if anchor_specs:
+            basis_used.add("CONNECT")
+        if mask_specs:
+            basis_used.add("FILL")
+
+        # Convert FillLaw objects to region_fills format for init_expressions
+        # Per WO-19: Evaluate semantic masks on test grid to get pixel sets
+        from arc_laws.connect_fill import FillLaw
+        from arc_compile.mask_eval import evaluate_mask
+        from arc_laws.selectors import apply_selector_on_test
+
+        region_fills = []
+        for law in connect_fill_laws:
+            if isinstance(law, FillLaw):
+                # Evaluate mask on test grid (semantic → pixels)
+                mask_pixels = evaluate_mask(law.mask_spec, test_grid, theta)
+
+                # Compute fill color on test grid
+                fill_color, empty_mask = apply_selector_on_test(
+                    selector_type=law.selector_type,
+                    mask=mask_pixels,
+                    X_test=test_grid,
+                    k=law.selector_k
+                )
+
+                # Only add if mask is non-empty and selector succeeded
+                if not empty_mask and fill_color is not None and mask_pixels:
+                    region_fills.append({
+                        "mask": mask_pixels,
+                        "fill_color": fill_color
+                    })
+
+        theta["region_fills"] = region_fills
 
     # =========================================================================
     # Step 6: Build U0 (init expressions)

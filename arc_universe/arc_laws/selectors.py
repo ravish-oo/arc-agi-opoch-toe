@@ -67,6 +67,11 @@ def apply_selector_on_test(
     if not mask:
         return (None, True)
 
+    # Handle CONSTANT:c format (deterministic color from training)
+    if selector_type.startswith("CONSTANT:"):
+        constant_color = int(selector_type.split(":")[1])
+        return (constant_color, False)
+
     # Validate selector type
     valid_types = ["ARGMAX", "ARGMIN_NONZERO", "UNIQUE", "MODE_kxk", "PARITY"]
     if selector_type not in valid_types:

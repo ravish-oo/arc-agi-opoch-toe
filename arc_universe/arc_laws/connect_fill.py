@@ -20,6 +20,7 @@ from collections import deque
 
 from arc_core.types import Grid, Pixel
 from arc_laws.selectors import apply_selector_on_test
+from arc_compile.mask_eval import MaskSpec, evaluate_mask
 
 
 # =============================================================================
@@ -57,8 +58,14 @@ class FillLaw:
     Per engineering_spec.md §5.8:
     "Fill/patched flood inside a present-definable mask with the selector color (from 5.5).
      Compile: masks/anchors from present; color law from selector."
+
+    Per engineering_spec.md line 108:
+    "Masks are present-definable (band roles, component classes, periodic classes)."
+
+    Key change (WO-19): Mask is now role-based (MaskSpec), not pixel coordinates.
+    This allows masks to work across different-sized grids via semantic evaluation.
     """
-    mask_pixels: frozenset[Pixel]  # Region to fill (from present roles/components)
+    mask_spec: MaskSpec            # Semantic mask specification (role-based)
     selector_type: str             # "UNIQUE_COLOR", "ARGMAX", "ARGMIN_NONZERO", etc.
     selector_k: Optional[int] = None  # For MODE_kxk selector
 
@@ -276,17 +283,20 @@ def apply_connect_law(law: ConnectLaw, grid: Grid) -> Grid:
     return result
 
 
-def apply_fill_law(law: FillLaw, grid: Grid, X_test_present: Grid) -> Grid:
+def apply_fill_law(law: FillLaw, grid: Grid, X_test_present: Grid, theta: dict) -> Grid:
     """
     Apply REGION_FILL law to grid.
 
     Computes fill color using selector on test input (recomputed per WO-13 spec),
     then floods mask with that color.
 
+    Per engineering_spec.md line 108: Masks are evaluated per-grid (semantic).
+
     Args:
         law: FillLaw instance
         grid: Input grid to transform
         X_test_present: Test input in canonical form (for selector evaluation)
+        theta: Compiled parameters (needed for mask evaluation)
 
     Returns:
         Grid with mask filled by selector color.
@@ -295,10 +305,13 @@ def apply_fill_law(law: FillLaw, grid: Grid, X_test_present: Grid) -> Grid:
         Per implementation_plan.md line 311:
         "Recompute histogram on ΠG(X_test) for non-empty masks"
     """
+    # Evaluate mask on test grid (role-based → pixel set)
+    mask_pixels = evaluate_mask(law.mask_spec, X_test_present, theta)
+
     # Recompute selector on test input
     fill_color, empty_mask = apply_selector_on_test(
         selector_type=law.selector_type,
-        mask=set(law.mask_pixels),  # Convert frozenset to set
+        mask=mask_pixels,
         X_test=X_test_present,
         k=law.selector_k
     )
@@ -310,7 +323,7 @@ def apply_fill_law(law: FillLaw, grid: Grid, X_test_present: Grid) -> Grid:
         return grid
 
     # Flood fill with computed color
-    return flood_fill(grid, set(law.mask_pixels), fill_color)
+    return flood_fill(grid, mask_pixels, fill_color)
 
 
 # =============================================================================
@@ -332,13 +345,16 @@ def build_connect_fill(theta: dict) -> List[ConnectLaw | FillLaw]:
     - CONNECT: "Unique shortest 4/8-connected path between two present-definable anchors"
     - FILL: "Fill/patched flood inside a present-definable mask with the selector color"
 
+    Per engineering_spec.md line 108:
+    - Masks are present-definable (band roles, component classes, periodic classes)
+
     Args:
         theta: Compiled parameters containing:
             - train_pairs: List[(Grid, Grid)] - training input/output pairs
             - anchors: List[dict] - anchor pair specifications (optional)
                 Each dict: {"anchor1": Pixel, "anchor2": Pixel, "metric": str, "color": int}
-            - masks: List[dict] - mask specifications (optional)
-                Each dict: {"pixels": Set[Pixel], "selector": str, "k": Optional[int]}
+            - masks: List[dict] - role-based mask specifications (optional)
+                Each dict: {"mask_spec": MaskSpec, "selector_type": str, "k": Optional[int]}
 
     Returns:
         List of ConnectLaw and FillLaw instances that passed FY verification.
@@ -346,7 +362,7 @@ def build_connect_fill(theta: dict) -> List[ConnectLaw | FillLaw]:
 
     Acceptance:
         - Deterministic (same theta → same laws)
-        - FY exactness verified on all training pairs
+        - FY exactness verified on all training pairs (masks evaluated per-grid)
         - Paths are lex-min among all shortest paths
         - Selectors use global order for tie-breaking
     """
@@ -397,20 +413,21 @@ def build_connect_fill(theta: dict) -> List[ConnectLaw | FillLaw]:
     # =========================================================================
 
     masks = theta.get("masks", [])
-    for mask_spec in masks:
-        mask_pixels = mask_spec["pixels"]
-        selector_type = mask_spec["selector"]
-        selector_k = mask_spec.get("k")  # Optional, for MODE_kxk
+    for mask_dict in masks:
+        # Extract role-based mask specification
+        mask_spec = mask_dict["mask_spec"]  # MaskSpec object
+        selector_type = mask_dict["selector_type"]
+        selector_k = mask_dict.get("k")  # Optional, for MODE_kxk
 
-        # Create law instance
+        # Create law instance with semantic mask
         law = FillLaw(
-            mask_pixels=frozenset(mask_pixels),  # Immutable for hashing
+            mask_spec=mask_spec,  # Store MaskSpec (semantic), not pixels
             selector_type=selector_type,
             selector_k=selector_k
         )
 
-        # Verify FY exactness on training pairs
-        is_exact = _verify_fill_law(law, train_pairs)
+        # Verify FY exactness on training pairs (evaluates mask per-grid)
+        is_exact = _verify_fill_law(law, train_pairs, theta)
         if is_exact:
             laws.append(law)
 
@@ -446,28 +463,40 @@ def _verify_connect_law(law: ConnectLaw, train_pairs: List[Tuple[Grid, Grid]]) -
     return True
 
 
-def _verify_fill_law(law: FillLaw, train_pairs: List[Tuple[Grid, Grid]]) -> bool:
+def _verify_fill_law(law: FillLaw, train_pairs: List[Tuple[Grid, Grid]], theta: dict) -> bool:
     """
     Verify REGION_FILL law reproduces all training outputs exactly.
 
     FY exactness: Filling mask with selector color should match output.
 
+    Per engineering_spec.md line 108: Masks are present-definable (evaluated per-grid).
+
     Args:
         law: FillLaw instance to verify
         train_pairs: List of (input, output) training pairs
+        theta: Compiled parameters (needed for mask evaluation)
 
     Returns:
         True if law is exact on all trains, False otherwise.
 
     Note:
-        For REGION_FILL, we need to evaluate selector on each training input
-        to determine the fill color, then verify the fill matches the output.
+        For REGION_FILL, we:
+        1. Evaluate mask on THIS training grid (role-based → pixel set)
+        2. Compute selector on this mask
+        3. Apply fill and verify output matches
+
+        This is the CRITICAL FIX for WO-19: Masks are now semantic (role-based),
+        not absolute pixel coordinates. They work across different-sized grids.
     """
-    for X, Y in train_pairs:
+    for grid_id, (X, Y) in enumerate(train_pairs):
+        # Evaluate mask on THIS training grid (semantic → pixels)
+        # This is the key: mask pixels are recomputed for each grid
+        mask_pixels = evaluate_mask(law.mask_spec, X, theta, grid_id)
+
         # Compute selector color on this training input
         fill_color, empty_mask = apply_selector_on_test(
             selector_type=law.selector_type,
-            mask=set(law.mask_pixels),
+            mask=mask_pixels,
             X_test=X,  # Use training input as "test" for verification
             k=law.selector_k
         )
@@ -479,7 +508,7 @@ def _verify_fill_law(law: FillLaw, train_pairs: List[Tuple[Grid, Grid]]) -> bool
             continue
 
         # Apply fill law
-        Y_pred = flood_fill(X, set(law.mask_pixels), fill_color)
+        Y_pred = flood_fill(X, mask_pixels, fill_color)
 
         # Check if prediction matches expected output
         if Y_pred != Y:
